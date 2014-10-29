@@ -36,13 +36,13 @@ class Environment:
 
     def pretty_print(self):
         "Pretty-prints the environment"
-        print '------------'
-        grid = [[' ' for _ in range(11)] for _ in range(11)]
+        print ' _ _ _ _ _ _ _ _ _ _ _'
+        grid = [['_' for _ in range(11)] for _ in range(11)]
         for predator in self.predators:
             grid[predator.position.y][predator.position.x] = 'P'
 
         grid[self.prey.position.y][self.prey.position.x] = u'☃'
 
         for row in grid:
-            print '|' + ''.join(row) + '|'
-        print '------------\n'
+            print '|' + '|'.join(row) + '|'
+        print '\n'
