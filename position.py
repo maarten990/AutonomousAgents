@@ -7,7 +7,7 @@ class Position:
         """
         Add two positions; returns a new position without changing the
         operands.
-        The addition is modulo 10 to account for the wrapping playing field.
+        The addition is modulo 11 to account for the wrapping playing field.
         """
         return Position((self.x + other.x) % 11,
                         (self.y + other.y) % 11)
