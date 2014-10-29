@@ -2,9 +2,10 @@ import random
 from position import Position
 
 class Predator:
-    def __init__(self, environment):
+    def __init__(self, environment, policy):
         self.position = Position(0, 0)
         self.environment = environment
+        self.policy = policy
 
     def step(self):
         "Performs one simulation step."
@@ -12,7 +13,7 @@ class Predator:
             if self.environment.empty(self.position + Position(*d))]
         directions.append((0, 0))
 
-        move_dir = random.choice(directions)
+        move_dir = self.policy(self.environment, directions)
         self.move(move_dir)
 
     def move(self, direction):

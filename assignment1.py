@@ -1,7 +1,11 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+from predator import Predator
+from prey import Prey
 from environment import Environment
+
+import random
 import sys
 
 def steps_until_caught(env):
@@ -16,11 +20,12 @@ def steps_until_caught(env):
     return steps
 
 def question_a(num_trials):
-    from predator1 import Predator
-    from prey1 import Prey
+    # The random policy used for question 1
+    policy = lambda env, directions: random.choice(directions)
+    predator_factory = lambda env: Predator(env, policy)
 
     # environment factory
-    new_env = lambda: Environment(Prey, Predator, 1)
+    new_env = lambda: Environment(Prey, predator_factory, 1)
 
     simulations = [steps_until_caught(new_env()) for _ in range(num_trials)]
     average = sum(simulations) / float(len(simulations))

@@ -1,9 +1,9 @@
 # coding=utf-8
 
 class Environment:
-    def __init__(self, prey_class, predator_class, num_predators):
-        self.predators = [predator_class(self) for _ in range(num_predators)]
-        self.prey = prey_class(self)
+    def __init__(self, prey_factory, predator_factory, num_predators):
+        self.predators = [predator_factory(self) for _ in range(num_predators)]
+        self.prey = prey_factory(self)
         
     def step(self):
         """
