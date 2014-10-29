@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-from environment import Environment
+from environment import Environment #TEMP COMMENT FOR TESTING
 import sys
 
 def steps_until_caught(env):
