@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 from environment import Environment
 import sys
@@ -23,9 +24,10 @@ def question_a(num_trials):
 
     simulations = [steps_until_caught(new_env()) for _ in range(num_trials)]
     average = sum(simulations) / float(len(simulations))
+    std_dev = sum([(simulation-average)**2 for simulation in simulations]) / float(len(simulations))
 
-    print 'Average number of steps over {0} trials: {1}'.format(num_trials,
-                                                                average)
+    print 'Average number of steps over {0} trials: {1:.2f}±{2:.2f}'.format(num_trials,
+                                                                average,std_dev)
 
 if __name__ == '__main__':
     global verbose
