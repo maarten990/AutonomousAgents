@@ -19,6 +19,11 @@ class Prey:
 
             move_dir = random.choice(directions)
             self.move(move_dir)
+            
+            #HIER KLOPT NOG GEEN FUCK VAN:
+            # alss het konijntje omringd word door predatoren (vs aliens) denk je:
+            # nou, dat konijntje zal wel fucked zijn! Maar het konijntje wint!
+            # en dat is vet kut! Wij haten konijnen! (behalve ed)
 
     def move(self, direction):
         """
