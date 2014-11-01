@@ -12,6 +12,9 @@ class Position:
         return Position((self.x + other.x) % 11,
                         (self.y + other.y) % 11)
 
+    def __hash__(self):
+        return hash((self.x, self.y))
+
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 

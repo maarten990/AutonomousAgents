@@ -3,7 +3,9 @@
 
 from predator import Predator
 from prey import Prey
-from environment import Environment
+from position import Position
+from environment import Environment, generate_state
+from policy_evaluation import policy_evaluation
 
 import random
 import sys
@@ -19,13 +21,12 @@ def steps_until_caught(env):
 
     return steps
 
-def question_a(num_trials):
-    # The random policy used for question 1
-    policy = lambda env, directions: random.choice(directions)
-    predator_factory = lambda env: Predator(env, policy)
+def random_policy(env, directions):
+    random.choice(directions)
 
+def question_a(num_trials):
     # environment factory
-    new_env = lambda: Environment(Prey, predator_factory, 1)
+    new_env = lambda: Environment(random_policy)
 
     simulations = [steps_until_caught(new_env()) for _ in range(num_trials)]
     average = sum(simulations) / float(len(simulations))
@@ -33,6 +34,18 @@ def question_a(num_trials):
 
     print 'Average number of steps over {0} trials: {1:.2f}±{2:.2f}'.format(num_trials,
                                                                 average,std_dev)
+    
+def question_b():
+    state1 = generate_state(random_policy, Position(0, 0), Position(5, 5))
+    state2 = generate_state(random_policy, Position(2, 3), Position(5, 4))
+    state3 = generate_state(random_policy, Position(2, 10), Position(10, 0))
+    state4 = generate_state(random_policy, Position(10, 10), Position(0, 0))
+    V = policy_evaluation(random_policy, gamma=0.8, verbose=verbose)
+
+    print '{0}: {1}'.format(state1, V[state1])
+    print '{0}: {1}'.format(state2, V[state2])
+    print '{0}: {1}'.format(state3, V[state3])
+    print '{0}: {1}'.format(state4, V[state4])
 
 if __name__ == '__main__':
     global verbose
@@ -42,4 +55,5 @@ if __name__ == '__main__':
     else:
         verbose = False
 
-    question_a(100)
+    #question_a(100)
+    question_b()
