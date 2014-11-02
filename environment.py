@@ -77,9 +77,13 @@ def print_state(state):
 
     print ' _ _ _ _ _ _ _ _ _ _ _'
     grid = [['_' for _ in range(11)] for _ in range(11)]
-    grid[predator[1]][predator[0]] = 'P'
+    
+    if terminal(state):
+        grid[prey[1]][prey[0]] = u'✝'
+    else:
+        grid[predator[1]][predator[0]] = 'P'
+        grid[prey[1]][prey[0]] = u'☃'    
 
-    grid[prey[1]][prey[0]] = u'☃'
 
     for row in grid:
         print '|' + '|'.join(row) + '|'
