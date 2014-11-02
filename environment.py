@@ -24,13 +24,14 @@ def step(state, policy):
     The policy is a dictionary mapping the state to an action performed by the
     predator.
     """
-    predator, prey = state
-    return (add_positions(predator, policy[state]),
-            add_positions(prey, prey_policy()))
+    newstate = update_state(state, policy[state])
+    newstate = update_state(newstate, prey_policy())
+
+    return newstate
 
 def terminal(state):
     "Returns wether we're in a terminal state (i.e. dead bunny)"
-    return state[0] == state[1]
+    return state == (0, 0)
 
 def reward(state):
     "Returns the reward of the state"
@@ -55,50 +56,43 @@ def successors(direction, state):
     the given direction in the given state.
     """
     new_states = []
-    predator, prey = state
-    
-    # move the predator
-    predator = add_positions(predator, direction)
-        
+
     # check for terminal state
     if terminal(state):
         return []
-
+    
+    # move the predator
+    state = update_state(state, direction)
+        
     # check all possible prey movements
     for direction, p in zip(prey_directions, prey_probabilities):
-        new_prey = add_positions(prey, direction)
-        new_states.append(((predator, new_prey), p))
+        new_state = update_state(state, direction)
+        new_states.append((new_state, p))
         
     return new_states
 
 def print_state(state):
-    "Pretty-prints a state"
-    predator, prey = state
+    pass
 
-    print ' _ _ _ _ _ _ _ _ _ _ _'
-    grid = [['_' for _ in range(11)] for _ in range(11)]
-    
-    if terminal(state):
-        grid[prey[1]][prey[0]] = u'✝'
-    else:
-        grid[predator[1]][predator[0]] = 'P'
-        grid[prey[1]][prey[0]] = u'☃'    
+def update_state(state, direction):
+    dist_x, dist_y = state
+    movement_x, movement_y = direction
+    newx = (dist_x + movement_x)
+    newy = (dist_y + movement_y)
 
+    if newx == 6:
+        newx = -5
+    if newx == -6:
+        newx = 5
+    if newy == 6:
+        newy = -5
+    if newy == -6:
+        newy = 5
 
-    for row in grid:
-        print '|' + '|'.join(row) + '|'
-    print '\n'
-
-def add_positions(p1, p2):
-    "Add two (x, y) tuples modulo 11"
-    x1, y1 = p1
-    x2, y2 = p2
-
-    return ((x1 + x2) % 11, (y1 + y2) % 11)
+    return (newx, newy)
 
 def all_states():
-    for pred_x in range(11):
-        for pred_y in range(11):
-            for prey_x in range(11):
-                for prey_y in range(11):
-                    yield ((pred_x, pred_y), (prey_x, prey_y))
+    for xdiff in range(-5, 6):
+        for ydiff in range(-5, 6):
+            yield (xdiff, ydiff)
+
