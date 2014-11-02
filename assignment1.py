@@ -1,34 +1,21 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-from predator import Predator
-from prey import Prey
-from position import Position
-from environment import Environment, generate_state
+from environment import *
 from policy_evaluation import policy_evaluation
+import sys, random
 
-import random
-import sys
+default_state = ((0, 0), (5, 5))
 
-def steps_until_caught(env):
-    "Run the simulation and return the number of steps until the prey is caught."
-    steps = 1
-    while env.step():
-        if verbose:
-            env.pretty_print()
+class random_policy:
+    directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
+    probabilities = [0.2, 0.2, 0.2, 0.2, 0.2]
+    
+    def __call__(self, state):
+        return add_positions(state[0], random.choice(self.directions))
 
-        steps += 1
-
-    return steps
-
-def random_policy(env, directions):
-    random.choice(directions)
-
-def question_a(num_trials):
-    # environment factory
-    new_env = lambda: Environment(random_policy)
-
-    simulations = [steps_until_caught(new_env()) for _ in range(num_trials)]
+def question_a(num_trials, verbose):
+    simulations = [run_simulation(default_state, random_policy(), verbose) for _ in range(num_trials)]
     average = sum(simulations) / float(len(simulations))
     std_dev = sum([(simulation-average)**2 for simulation in simulations]) / float(len(simulations))
 
@@ -36,11 +23,11 @@ def question_a(num_trials):
                                                                 average,std_dev)
     
 def question_b():
-    state1 = generate_state(random_policy, Position(0, 0), Position(5, 5))
-    state2 = generate_state(random_policy, Position(2, 3), Position(5, 4))
-    state3 = generate_state(random_policy, Position(2, 10), Position(10, 0))
-    state4 = generate_state(random_policy, Position(10, 10), Position(0, 0))
-    V = policy_evaluation(random_policy, gamma=0.8, verbose=verbose)
+    state1 = ((0, 0), (5, 5))
+    state2 = ((2, 3), (5, 4))
+    state3 = ((2, 10), (10, 0))
+    state4 = ((10, 10), (0, 0))
+    V = policy_evaluation(random_policy(), gamma=0.8, verbose=verbose)
 
     print '{0}: {1}'.format(state1, V[state1])
     print '{0}: {1}'.format(state2, V[state2])
@@ -48,12 +35,10 @@ def question_b():
     print '{0}: {1}'.format(state4, V[state4])
 
 if __name__ == '__main__':
-    global verbose
-    
     if len(sys.argv) > 1 and sys.argv[1] == '-v':
         verbose = True
     else:
         verbose = False
 
-    #question_a(100)
+    #question_a(100, verbose)
     question_b()

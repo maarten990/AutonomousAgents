@@ -1,18 +1,15 @@
 from collections import defaultdict
-from position import Position
-from environment import generate_state
+from environment import *
 
-def policy_evaluation(policy, gamma=0.8, theta=1e-2, verbose=False):
-    all_states = []
-    for x_pred in range(10):
-        for y_pred in range(10):
-            for x_prey in range(10):
-                for y_prey in range(10):
-                    all_states.append(generate_state(policy,
-                                                     Position(x_pred, y_pred),
-                                                     Position(x_prey, y_prey)))
+def policy_evaluation(policy, gamma=0.8, theta=1e-3, verbose=False):
+    # create a list of all possible states
+    V = {}
+    for x_pred in range(11):
+        for y_pred in range(11):
+            for x_prey in range(11):
+                for y_prey in range(11):
+                    V[((x_pred, y_pred), (x_prey, y_prey))] = 0
 
-    V = defaultdict(lambda: 0)
 
     delta = 999
     iter = 1
@@ -20,14 +17,14 @@ def policy_evaluation(policy, gamma=0.8, theta=1e-2, verbose=False):
         delta = 0
         print "Iteration {0}".format(iter)
 
-        for state in all_states:
+        for state in V.keys():
             v = V[state]
             newV = 0
 
-            actions_probs = zip(state.predator.actions, state.predator.probabilities)
-            for action, pi in actions_probs:
-                newV += pi * sum([P * (sprime.reward() + (gamma * V[sprime]))
-                              for sprime, P in state.successors(action)])
+            dirs_probs = zip(policy.directions, policy.probabilities)
+            for direction, pi in dirs_probs:
+                newV += pi * sum([P * (reward(sprime) + (gamma * V[sprime]))
+                              for sprime, P in successors(direction, state)])
 
             V[state] = newV
             delta = max(delta, abs(v - newV))

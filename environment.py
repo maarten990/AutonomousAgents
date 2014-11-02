@@ -1,77 +1,71 @@
 # coding=utf-8
 
-from copy import deepcopy
-from predator import Predator
-from prey import Prey
+import numpy.random
 
-def generate_state(policy, predator_position, prey_position):
-    state = Environment(policy)
-    state.predator.position = predator_position
-    state.prey.position = prey_position
+prey_directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
+prey_probabilities = [0.8, 0.05, 0.05, 0.05, 0.05]
+
+def run_simulation(state, policy, verbose):
+    steps = 1
+
+    while not terminal(state):
+        if verbose:
+            print_state(state)
+
+        state = step(state, policy)
+        steps += 1
+
+    return steps
+
+def step(state, policy):
+    predator, prey = state
+    return policy(state), prey_policy(prey)
+
+def terminal(state):
+    return state[0] == state[1]
+
+def reward(state):
+    return 10 if terminal(state) else 0
     
-    return state
+def prey_policy(position):
+    return add_positions(position, sample(prey_directions, prey_probabilities))
 
-class Environment:
-    def __init__(self, policy):
-        self.predator = Predator(self, policy)
-        self.prey = Prey(self)
+def sample(positions, probabilities):
+    ids = range(len(positions))
+    id = numpy.random.choice(ids, p=probabilities)
+    return positions[id]
+
+def successors(direction, state):
+    new_states = []
+    predator, prey = state
+    predator = add_positions(predator, direction)
         
-    def step(self):
-        """
-        Perform one simulation step. Returns False if the prey is caught,
-        True otherwise. This allows for a main loop of the form:
-        while environment.step():
-            ...
-        """
+    # check for terminal state
+    if terminal(state):
+        return []
 
-        # first update the predator and check if they catch the prey
-        self.predator.step()
-        if self.predator.position == self.prey.position:
-            return False
-
-        # update the prey
-        self.prey.step()
-        return True
-    
-    def reward(self):
-        return 10 if self.predator.position == self.prey.position else 0
-    
-    def successors(self, action):
-        new_states = []
+    for direction, p in zip(prey_directions, prey_probabilities):
+        new_prey = add_positions(prey, direction)
+        new_states.append(((predator, new_prey), p))
         
-        # check for terminal state
-        if self.reward() != 0:
-            return []
+    return new_states
 
-        for prey_action, p in zip(self.prey.actions, self.prey.probabilities):
-            new_state = deepcopy(self)
-            new_state.predator.perform_action(action)
-            new_state.prey.perform_action(prey_action)
-            new_states.append((new_state, p))
-        
-        return new_states
+def print_state(state):
+    "Pretty-prints a state"
+    predator, prey = state
 
+    print ' _ _ _ _ _ _ _ _ _ _ _'
+    grid = [['_' for _ in range(11)] for _ in range(11)]
+    grid[predator[1]][predator[0]] = 'P'
 
-    def pretty_print(self):
-        "Pretty-prints the environment"
-        print ' _ _ _ _ _ _ _ _ _ _ _'
-        grid = [['_' for _ in range(11)] for _ in range(11)]
-        grid[self.predator.position.y][self.predator.position.x] = 'P'
+    grid[prey[1]][prey[0]] = u'☃'
 
-        grid[self.prey.position.y][self.prey.position.x] = u'☃'
+    for row in grid:
+        print '|' + '|'.join(row) + '|'
+    print '\n'
 
-        for row in grid:
-            print '|' + '|'.join(row) + '|'
-        print '\n'
-        
-    def __hash__(self):
-        return hash((self.predator.position, self.prey.position))
-        
-    def __eq__(self, other):
-        return (self.predator.position, self.prey.position) == (other.predator.position, other.prey.position)
+def add_positions(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
 
-    def __repr__(self):
-        return 'Env(Predator({0}, {1}), Prey({2}, {3}))'.format(self.predator.position.x,
-                                                                self.predator.position.y,
-                                                                self.prey.position.x,
-                                                                self.prey.position.y)
+    return ((x1 + x2) % 11, (y1 + y2) % 11)
