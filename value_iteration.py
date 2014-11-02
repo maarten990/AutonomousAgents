@@ -3,19 +3,15 @@ from environment import *
 def value_iteration(gamma=0.8, theta=1e-3, verbose=False):
     # create a list of all possible states
     V = {}
-    for x_pred in range(11):
-        for y_pred in range(11):
-            for x_prey in range(11):
-                for y_prey in range(11):
-                    V[((x_pred, y_pred), (x_prey, y_prey))] = 0
+    for x_dist in range(-5, 6):
+        for y_dist in range(-5, 6):
+            V[(x_dist, y_dist)] = 0
 
     # default action: don't do shit
     policy = {}
-    for x_pred in range(11):
-        for y_pred in range(11):
-            for x_prey in range(11):
-                for y_prey in range(11):
-                    policy[((x_pred, y_pred), (x_prey, y_prey))] = (0, 0)
+    for x_dist in range(-5, 6):
+        for y_dist in range(-5, 6):
+            policy[(x_dist, y_dist)] = (0, 0)
 
     delta = 999
     iter = 1

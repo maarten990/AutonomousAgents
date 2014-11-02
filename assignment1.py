@@ -7,7 +7,7 @@ from policy_improvement import policy_improvement
 from value_iteration import value_iteration
 import sys, random
 
-default_state = ((0, 0), (5, 5))
+default_state = (5, 5)
 
 class random_policy:
     "Random policy that mimicks a dictionary"
@@ -91,16 +91,15 @@ def question_d(verbose):
 
     # create the policy and filter it to the states we're interested in
     policy = value_iteration(gamma=0.8, verbose=verbose)
-    relevant = {state: direction for state, direction in policy.iteritems()
-                if state[1] == (5, 5)}
 
     # draw!
     grid = [['_' for _ in range(11)] for _ in range(11)]
 
-    for state, direction in relevant.iteritems():
-        predator, _ = state
-        x, y = predator
-        grid[y][x] = arrowmap[direction]
+    # translate from positions to the distance representation
+    for x in range(11):
+        for y in range(11):
+            state = (x - 5, y - 5)
+            grid[y][x] = arrowmap[policy[state]]
 
     grid[5][5] = u'☃'
 
