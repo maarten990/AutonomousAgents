@@ -81,19 +81,15 @@ def print_state(state):
     pass
 
 def update_state(state, direction):
+    """
+    Update the state given a movement direction for the predator.
+    """
     dist_x, dist_y = state
     movement_x, movement_y = direction
-    newx = (dist_x + movement_x)
-    newy = (dist_y + movement_y)
 
-    if newx == 6:
-        newx = -5
-    if newx == -6:
-        newx = 5
-    if newy == 6:
-        newy = -5
-    if newy == -6:
-        newy = 5
+    # the distance is modulo 11, but shifted to the range (-5, 5)
+    newx = ((dist_x + movement_x + 5) % 11) - 5
+    newy = ((dist_y + movement_y + 5) % 11) - 5
 
     return (newx, newy)
 
