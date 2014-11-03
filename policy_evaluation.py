@@ -2,14 +2,10 @@ from collections import defaultdict
 from environment import *
 
 def policy_evaluation(policy, gamma=0.8, theta=1e-3, verbose=False):
-    # create a list of all possible states
+    # initialize V to zero
     V = {}
-    for x_pred in range(11):
-        for y_pred in range(11):
-            for x_prey in range(11):
-                for y_prey in range(11):
-                    V[((x_pred, y_pred), (x_prey, y_prey))] = 0
-
+    for state in all_states:
+        V[state] = 0
 
     delta = 999
     iter = 1

@@ -95,3 +95,10 @@ def add_positions(p1, p2):
     x2, y2 = p2
 
     return ((x1 + x2) % 11, (y1 + y2) % 11)
+
+def all_states():
+    for pred_x in range(11):
+        for pred_y in range(11):
+            for prey_x in range(11):
+                for prey_y in range(11):
+                    yield ((pred_x, pred_y), (prey_x, prey_y))

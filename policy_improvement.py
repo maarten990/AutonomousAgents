@@ -1,15 +1,6 @@
 from environment import *
 
-def policy_evaluation(policy, gamma=0.8, theta=1e-3, V=None, verbose=False):
-    # create a list of all possible states
-    if not V:
-        V = {}
-        for x_pred in range(11):
-            for y_pred in range(11):
-                for x_prey in range(11):
-                    for y_prey in range(11):
-                        V[((x_pred, y_pred), (x_prey, y_prey))] = 0
-
+def policy_evaluation(policy, V, gamma=0.8, theta=1e-3, verbose=False):
     delta = 999
     iter = 1
     while delta > theta:
@@ -37,16 +28,14 @@ def policy_improvement(gamma, theta=1e-3, verbose=False):
 
     # default action: don't do shit
     policy = {}
-    for x_pred in range(11):
-        for y_pred in range(11):
-            for x_prey in range(11):
-                for y_prey in range(11):
-                    policy[((x_pred, y_pred), (x_prey, y_prey))] = (0, 0)
+    V = {}
+    for state in all_states:
+        V[state] = 0
+        policy[state] = (0, 0)
     
     iter = 0
-    V = None
     while True:
-        V = policy_evaluation(policy, gamma, theta, V=V, verbose=verbose)
+        V = policy_evaluation(policy, V, gamma, theta, verbose=verbose)
 
         policy_stable = True
         for state in policy.keys():
