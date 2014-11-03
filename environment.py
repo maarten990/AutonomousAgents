@@ -1,5 +1,11 @@
 # coding=utf-8
 
+# The state representation is a tuple containing the difference in position
+# between the predator and prey in the x and y directions, i.e. state =
+# (x_distance, y_distance). Distances are directional depending on their sign.
+# As we're on a toroidal 11x11 grid, the distances are in the range from -5 to 5
+# (inclusive).
+
 import numpy.random
 
 prey_directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
