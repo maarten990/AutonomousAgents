@@ -5,7 +5,7 @@ from environment import *
 from policy_evaluation import policy_evaluation
 from policy_improvement import policy_improvement
 from value_iteration import value_iteration
-import sys, random
+import random, argparse
 
 default_state = (5, 5)
 
@@ -47,7 +47,7 @@ def print_policy(policy, prey_position):
     
 
 # run a bunch of simulations on the default state using a random policy
-def question_a(num_trials, verbose):
+def question_a(verbose, num_trials=100):
     simulations = [run_simulation(default_state, random_policy(), verbose) for _ in range(num_trials)]
     average = sum(simulations) / float(len(simulations))
     std_dev = sum([(simulation-average)**2 for simulation in simulations]) / float(len(simulations))
@@ -96,12 +96,11 @@ def question_d(verbose):
     print 'Average number of steps over {0} trials: {1:.2f}±{2:.2f}'.format(100, average, std_dev)
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == '-v':
-        verbose = True
-    else:
-        verbose = False
+    parser = argparse.ArgumentParser()
+    parser.add_argument('question', help='the subquestion to execute',
+            choices=['a', 'b', 'c', 'd'])
+    parser.add_argument('-v', '--verbose', help='produce more verbose output',
+            action='store_true')
 
-    #question_a(100, verbose)
-    #question_b(verbose)
-    #question_c(verbose)
-    question_d(verbose)
+    args = parser.parse_args()
+    eval('question_{0}'.format(args.question))(args.verbose)
