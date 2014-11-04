@@ -61,6 +61,6 @@ def policy_improvement(gamma, theta=1e-3, verbose=False):
         
         iter += 1
         if verbose:
-            print "[Improvment] Iteration ", iter
+            print "[Improvement] Iteration ", iter
         
     return policy

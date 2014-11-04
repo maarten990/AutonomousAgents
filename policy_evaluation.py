@@ -11,7 +11,6 @@ def policy_evaluation(policy, gamma=0.8, theta=1e-3, verbose=False):
     iter = 1
     while delta > theta:
         delta = 0
-        print "Iteration {0}".format(iter)
 
         for state in V.keys():
             v = V[state]
@@ -25,7 +24,10 @@ def policy_evaluation(policy, gamma=0.8, theta=1e-3, verbose=False):
             V[state] = newV
             delta = max(delta, abs(v - newV))
             
-        print "Delta: ", delta
+        if verbose:
+            print "Iteration {0}".format(iter)
+            print "Delta: ", delta
+
         iter += 1
 
     return V
