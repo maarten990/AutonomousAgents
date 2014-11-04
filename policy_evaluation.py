@@ -4,7 +4,7 @@ from environment import *
 def policy_evaluation(policy, gamma=0.8, theta=1e-3, verbose=False):
     # initialize V to zero
     V = {}
-    for state in all_states:
+    for state in all_states():
         V[state] = 0
 
     delta = 999
