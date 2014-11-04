@@ -17,6 +17,35 @@ class random_policy:
     def __getitem__(self, state):
         return random.choice(self.directions)
 
+def print_policy(policy, prey_position):
+    """
+    Print the optimal move given a policy for each predator given a fixed
+    position for the prey.
+    """
+    grid = [['_' for _ in range(11)] for _ in range(11)]
+    prey_x, prey_y = prey_position
+    arrowmap = {
+        (-1, 0): u'←',
+        (0, -1): u'↑',
+        (1, 0): u'→',
+        (0, 1): u'↓',
+        (0, 0): u' ',
+    }
+
+    # translate from positions to the distance representation
+    for x in range(11):
+        for y in range(11):
+            state = (x - prey_x, y - prey_y)
+            grid[y][x] = arrowmap[policy[state]]
+
+    grid[prey_x][prey_y] = u'☃'
+
+    print ' _ _ _ _ _ _ _ _ _ _ _'
+    for row in grid:
+        print '|' + '|'.join(row) + '|'
+    print '\n'
+    
+
 # run a bunch of simulations on the default state using a random policy
 def question_a(num_trials, verbose):
     simulations = [run_simulation(default_state, random_policy(), verbose) for _ in range(num_trials)]
@@ -42,34 +71,9 @@ def question_b(verbose):
 
 # perform policy iteration and print the policy for all states where the prey is at (5, 5)
 def question_c(verbose):
-    # visualize directions
-    arrowmap = {
-        (-1, 0): u'←',
-        (0, -1): u'↑',
-        (1, 0): u'→',
-        (0, 1): u'↓',
-        (0, 0): u' ',
-    }
-
-    # create the policy and filter it to the states we're interested in
+    # create the policy and and print it for a prey at (5, 5)
     policy = policy_improvement(gamma=0.8, verbose=verbose)
-    relevant = {state: direction for state, direction in policy.iteritems()
-                if state[1] == (5, 5)}
-
-    # draw!
-    grid = [['_' for _ in range(11)] for _ in range(11)]
-
-    for state, direction in relevant.iteritems():
-        predator, _ = state
-        x, y = predator
-        grid[y][x] = arrowmap[direction]
-
-    grid[5][5] = u'☃'
-
-    print ' _ _ _ _ _ _ _ _ _ _ _'
-    for row in grid:
-        print u'|' + u'|'.join(row) + u'|'
-    print '\n'
+    print_policy(policy, (5, 5))
     
     # run the simulation a few times just for shits and giggles
     simulations = [run_simulation(default_state, policy, verbose) for _ in range(100)]
@@ -80,34 +84,10 @@ def question_c(verbose):
 
 # perform value iteration and print the policy for all states where the prey is at (5, 5)
 def question_d(verbose):
-    # visualize directions
-    arrowmap = {
-        (-1, 0): u'←',
-        (0, -1): u'↑',
-        (1, 0): u'→',
-        (0, 1): u'↓',
-        (0, 0): u' ',
-    }
-
-    # create the policy and filter it to the states we're interested in
+    # create the policy and and print it for a prey at (5, 5)
     policy = value_iteration(gamma=0.8, verbose=verbose)
+    print_policy(policy, (5, 5))
 
-    # draw!
-    grid = [['_' for _ in range(11)] for _ in range(11)]
-
-    # translate from positions to the distance representation
-    for x in range(11):
-        for y in range(11):
-            state = (x - 5, y - 5)
-            grid[y][x] = arrowmap[policy[state]]
-
-    grid[5][5] = u'☃'
-
-    print ' _ _ _ _ _ _ _ _ _ _ _'
-    for row in grid:
-        print u'|' + u'|'.join(row) + u'|'
-    print '\n'
-    
     # run the simulation a few times just for shits and giggles
     simulations = [run_simulation(default_state, policy, verbose) for _ in range(100)]
     average = sum(simulations) / float(len(simulations))
