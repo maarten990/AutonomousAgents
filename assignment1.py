@@ -28,10 +28,10 @@ def question_a(num_trials, verbose):
     
 # perform policy evaluation and print the V values of several states
 def question_b(verbose):
-    state1 = ((0, 0), (5, 5))
-    state2 = ((2, 3), (5, 4))
-    state3 = ((2, 10), (10, 0))
-    state4 = ((10, 10), (0, 0))
+    state1 = (-5, -5)
+    state2 = (-3, -1)
+    state3 = (3, -1)
+    state4 = (1, 1)
 
     V = policy_evaluation(random_policy(), gamma=0.8, verbose=verbose)
 

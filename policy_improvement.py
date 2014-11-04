@@ -29,7 +29,7 @@ def policy_improvement(gamma, theta=1e-3, verbose=False):
     # default action: don't do shit
     policy = {}
     V = {}
-    for state in all_states:
+    for state in all_states():
         V[state] = 0
         policy[state] = (0, 0)
     
