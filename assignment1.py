@@ -5,6 +5,7 @@ from environment import *
 from policy_evaluation import policy_evaluation
 from policy_improvement import policy_improvement
 from value_iteration import value_iteration
+from numpy import std, average
 import random, argparse
 
 default_state = (5, 5)
@@ -49,15 +50,15 @@ def print_policy(policy, prey_position):
 # run a bunch of simulations on the default state using a random policy
 def question_a(verbose, num_trials=100):
     simulations = [run_simulation(default_state, random_policy(), verbose) for _ in range(num_trials)]
-    average = sum(simulations) / float(len(simulations))
-    std_dev = sum([(simulation-average)**2 for simulation in simulations]) / float(len(simulations))
+    avg = average(simulations)
+    std_dev = std(simulations)
 
     if verbose:
         print 'Counts: '
         print '\n'.join(map(str, simulations))
 
     print 'Average number of steps over {0} trials: {1:.2f}±{2:.2f}'.format(num_trials,
-                                                                average,std_dev)
+                                                                avg, std_dev)
     
 # perform policy evaluation and print the V values of several states
 def question_b(verbose):
