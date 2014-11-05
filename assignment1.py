@@ -10,7 +10,7 @@ import random, argparse
 default_state = ((0, 0), (5, 5))
 
 class random_policy:
-    "Random policy that mimicks a dictionary"
+    "Random policy that mimics a dictionary"
     directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
     probabilities = [0.2, 0.2, 0.2, 0.2, 0.2]
     
