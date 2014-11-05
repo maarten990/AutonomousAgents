@@ -65,7 +65,7 @@ def question_b(verbose, gamma):
     state1 = (-5, -5)
     state2 = (-3, -1)
     state3 = (3, -1)
-    state4 = (1, 1)
+    state4 = (-1, -1)
 
     V = policy_evaluation(random_policy(), gamma=gamma, verbose=verbose)
 
