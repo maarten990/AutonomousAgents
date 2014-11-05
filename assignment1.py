@@ -52,6 +52,10 @@ def question_a(verbose, num_trials=100):
     average = sum(simulations) / float(len(simulations))
     std_dev = sum([(simulation-average)**2 for simulation in simulations]) / float(len(simulations))
 
+    if verbose:
+        print 'Counts: '
+        print '\n'.join(map(str, simulations))
+
     print 'Average number of steps over {0} trials: {1:.2f}±{2:.2f}'.format(num_trials,
                                                                 average,std_dev)
     
