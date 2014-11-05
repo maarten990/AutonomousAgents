@@ -19,7 +19,7 @@ class random_policy:
         return random.choice(self.directions)
 
 # run a bunch of simulations on the default state using a random policy
-def question_a(verbose, num_trials=100):
+def question_a(verbose, gamma, num_trials=100):
     simulations = [run_simulation(default_state, random_policy(), verbose) for _ in range(num_trials)]
     avg = average(simulations)
     std_dev = std(simulations)
@@ -28,13 +28,13 @@ def question_a(verbose, num_trials=100):
                                                                 avg, std_dev)
     
 # perform policy evaluation and print the V values of several states
-def question_b(verbose):
+def question_b(verbose, gamma):
     state1 = ((0, 0), (5, 5))
     state2 = ((2, 3), (5, 4))
     state3 = ((2, 10), (10, 0))
     state4 = ((10, 10), (0, 0))
 
-    V = policy_evaluation(random_policy(), gamma=0.8, verbose=verbose)
+    V = policy_evaluation(random_policy(), gamma=gamma, verbose=verbose)
 
     print '{0}: {1}'.format(state1, V[state1])
     print '{0}: {1}'.format(state2, V[state2])
@@ -42,7 +42,7 @@ def question_b(verbose):
     print '{0}: {1}'.format(state4, V[state4])
 
 # perform policy iteration and print the policy for all states where the prey is at (5, 5)
-def question_c(verbose):
+def question_c(verbose, gamma):
     # visualize directions
     arrowmap = {
         (-1, 0): u'←',
@@ -80,7 +80,7 @@ def question_c(verbose):
     print 'Average number of steps over {0} trials: {1:.2f}±{2:.2f}'.format(100, average, std_dev)
 
 # perform value iteration and print the policy for all states where the prey is at (5, 5)
-def question_d(verbose):
+def question_d(verbose, gamma):
     # visualize directions
     arrowmap = {
         (-1, 0): u'←',
@@ -123,6 +123,8 @@ if __name__ == '__main__':
             choices=['a', 'b', 'c', 'd'])
     parser.add_argument('-v', '--verbose', help='produce more verbose output',
             action='store_true')
+    parser.add_argument('-g', '--gamma', help='the discount factor',
+            nargs='?', default=0.8, type=float)
 
     args = parser.parse_args()
-    eval('question_{0}'.format(args.question))(args.verbose)
+    eval('question_{0}'.format(args.question))(args.verbose, args.gamma)
