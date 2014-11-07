@@ -1,0 +1,45 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+
+\begin{document}
+
+\title{Single Agent Planning}
+\author{Ties van Rozendaal, Maarten de Jonge, Edwin Odijk, Marysia Winkels}
+\maketitle
+
+\section*{State Representation}
+The most naive state representation explicitly encodes the positions of both the
+predator and the prey, giving it four parameters (the $x$ and $y$ coordinates of
+the predator and the prey). The full state-space then consists of $N^4$ states,
+where $N$ is the width and height of the world (assuming a square world for
+simplicity).
+
+As the policy evaluation algorithm has an outer loop iterating through the
+entire state-space, it has a fairly unpleasant time complexity of
+$\mathcal{O}(N^4)$. However, using the insight that the optimal policy only
+depends on the relative positions of the predator and the prey, the size of the
+state-space can be significantly reduced: when the state is encoded as only the
+signed distance in the $x$ and $y$ directions between predator and prey, the
+state space is reduced to $N^2$ states, and the policy evaluation algorithm is
+then $\mathcal{O}(N^2)$. Quantitative performance measurements can be seen in table
+\ref{tbl:representation}.
+
+\begin{table}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Algorithm & Naive representation & Distance representation \\
+		\hline
+		Policy evaluation & 9.49 s (9490 ms) & 73.2 ms \\
+		Policy improvement & 14.6 s (14600 ms) & 158 ms \\
+		Value iteration & 7.51 s (75100 ms)& 132 ms \\
+		\hline
+	\end{tabular}
+	\caption{The runtimes of various algorithms using both state representations.
+		$\gamma = 0.8$ for all trials. Execution time has been averaged over 10
+		runs, and the best time out of three separate trials is chosen.}
+	\label{tbl:representation}
+\end{table}
+
+\end{document}
