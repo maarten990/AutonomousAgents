@@ -1,3 +1,9 @@
 *.pyc
 __pycache__
 .hidden
+.*.swp
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.pdf
