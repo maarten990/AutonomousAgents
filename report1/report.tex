@@ -6,11 +6,12 @@
 \begin{document}
 
 \title{Single Agent Planning}
-\author{Ties van Rozendaal, Maarten de Jonge, Edwin Odijk, Marysia Winkels}
+\author{Maarten de Jonge, Edwin Odijk, Ties van Rozendaal, Marysia Winkels}
 \maketitle
 
-\section*{Comparison of Algorithms}
-The following three policies have been considered:
+\section*{Introduction}
+This report describes the implementation of a simulation as required for the first assignment of the Autonomous Agents course at the University of Amsterdam. The simulation involves a "Predator" attempting to catch a "Prey" on a 10x10 grid, with the goal being for the Predator to end up on the same tile as the Prey.\\
+Policies considered for this simulation are:
 \begin{itemize}
 	\item Random policy: The predator has an equal probability of taking each
 		available action, regardless of the state.
@@ -19,6 +20,10 @@ The following three policies have been considered:
 	\item Value iteration: An optimal policy found by the value iteration
 		algorithm.
 \end{itemize}
+
+Simulations were run 100 times to ensure an accurate estimate of the average number of steps required to reach the goal, as well as the standard deviation.
+
+\section*{Comparison of Algorithms}
 
 Todo: write about tables \ref{tbl:sim_convergence}, \ref{tbl:algo_convergence},
 \ref{tbl:performance}.
@@ -52,22 +57,6 @@ Todo: write about tables \ref{tbl:sim_convergence}, \ref{tbl:algo_convergence},
 	\label{tbl:algo_convergence}
 \end{table}
 
-\begin{table}[htb]
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Algorithm & Naive representation & Distance representation \\
-		\hline
-		Policy evaluation & 9.49 s (9490 ms) & 73.2 ms \\
-		Policy improvement & 14.6 s (14600 ms) & 158 ms \\
-		Value iteration & 7.51 s (75100 ms)& 132 ms \\
-		\hline
-	\end{tabular}
-	\caption{The runtimes of various algorithms using both state representations.
-		$\gamma = 0.8$ for all trials. Execution time has been averaged over 10
-		runs, and the best time out of three separate trials is chosen.}
-	\label{tbl:performance}
-\end{table}
-
 \section*{State Representation}
 The most naive state representation explicitly encodes the positions of both the
 predator and the prey, giving it four parameters (the $x$ and $y$ coordinates of
@@ -85,4 +74,23 @@ state space is reduced to $N^2$ states, and the policy evaluation algorithm is
 then $\mathcal{O}(N^2)$. Quantitative performance measurements can be seen in table
 \ref{tbl:performance}.
 
+\begin{table}[htb]
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Algorithm & Naive representation & Distance representation \\
+		\hline
+		Policy evaluation & 9.49 s (9490 ms) & 73.2 ms \\
+		Policy improvement & 14.6 s (14600 ms) & 158 ms \\
+		Value iteration & 7.51 s (75100 ms)& 132 ms \\
+		\hline
+	\end{tabular}
+	\caption{The runtimes of various algorithms using both state representations.
+		$\gamma = 0.8$ for all trials. Execution time has been averaged over 10
+		runs, and the best time out of three separate trials is chosen.}
+	\label{tbl:performance}
+\end{table}
+
 \end{document}
+
+\section*{Conclusion}
+blep
