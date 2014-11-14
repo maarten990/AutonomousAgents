@@ -2,6 +2,7 @@
 
 \usepackage[english]{babel}
 \usepackage{amsmath, amssymb}
+\usepackage{parskip}
 
 \begin{document}
 
@@ -25,10 +26,10 @@ Policies considered for this simulation are:
 
 Simulations were run 100 times to ensure an accurate estimate of the average number of steps required to reach the goal, as well as the standard deviation.
 
-\section{Implementation} 
+\section*{Implementation} 
 % (als in, in Python, wel/geen gebruik maken van klassen, en daarna over state representation)
 
-\subsection{State Representation}
+\subsection*{State Representation}
 The most naive state representation explicitly encodes the positions of both the
 predator and the prey, giving it four parameters (the $x$ and $y$ coordinates of
 the predator and the prey). The full state-space then consists of $N^4$ states,
