@@ -10,7 +10,9 @@
 \maketitle
 
 \section*{Introduction}
-This report describes the implementation of a simulation as required for the first assignment of the Autonomous Agents course at the University of Amsterdam. The simulation involves a "Predator" attempting to catch a "Prey" on a 10x10 grid, with the goal being for the Predator to end up on the same tile as the Prey.\\
+This report describes the implementation of a simulation as required for the first assignment of the Autonomous Agents course at the University of Amsterdam. The simulation involves a "Predator" attempting to catch a "Prey" on a 11x11 toroidal grid, with the goal being for the Predator to end up on the same tile as the Prey.\\
+
+% To Do: Van, nou ja, we hebben deze environment en deze agents en die kunnen dit en nu willen wij verschillende policies implementeren en deze vergelijken 
 Policies considered for this simulation are:
 \begin{itemize}
 	\item Random policy: The predator has an equal probability of taking each
@@ -23,12 +25,32 @@ Policies considered for this simulation are:
 
 Simulations were run 100 times to ensure an accurate estimate of the average number of steps required to reach the goal, as well as the standard deviation.
 
+\section{Implementation} 
+% (als in, in Python, wel/geen gebruik maken van klassen, en daarna over state representation)
+
+\subsection{State Representation}
+The most naive state representation explicitly encodes the positions of both the
+predator and the prey, giving it four parameters (the $x$ and $y$ coordinates of
+the predator and the prey). The full state-space then consists of $N^4$ states,
+where $N$ is the width and height of the world (assuming a square world for
+simplicity).
+
+As the policy evaluation algorithm has an outer loop iterating through the
+entire state-space, it has a fairly unpleasant time complexity of
+$\mathcal{O}(N^4)$. However, using the insight that the optimal policy only
+depends on the relative positions of the predator and the prey, the size of the
+state-space can be significantly reduced: when the state is encoded as only the
+signed distance in the $x$ and $y$ directions between predator and prey, the
+state space is reduced to $N^2$ states, and the policy evaluation algorithm is
+then $\mathcal{O}(N^2)$. Quantitative performance measurements can be seen in table
+\ref{tbl:performance}.
+
 \section*{Comparison of Algorithms}
 \subsection*{Efficiency}
 As table \ref{tbl:sim_convergence} shows, there is no difference between the
 policies produced by the policy improvement and the value iteration algorithm
-(the slight differences in average and standard deviation are due to the random
-behaviour of the prey); unsurpringly, both are a major improvement over the
+(the slight differences in average and standard deviation are most likely due to the random
+behaviour of the prey); unsurprisingly, both policies are a major improvement over the
 random policy.
 
 Table \ref{tbl:algo_convergence} shows the number of algorithm
@@ -84,23 +106,6 @@ dickbutt
 		runs, and the best time out of three separate trials is chosen.}
 	\label{tbl:performance}
 \end{table}
-
-\section*{State Representation}
-The most naive state representation explicitly encodes the positions of both the
-predator and the prey, giving it four parameters (the $x$ and $y$ coordinates of
-the predator and the prey). The full state-space then consists of $N^4$ states,
-where $N$ is the width and height of the world (assuming a square world for
-simplicity).
-
-As the policy evaluation algorithm has an outer loop iterating through the
-entire state-space, it has a fairly unpleasant time complexity of
-$\mathcal{O}(N^4)$. However, using the insight that the optimal policy only
-depends on the relative positions of the predator and the prey, the size of the
-state-space can be significantly reduced: when the state is encoded as only the
-signed distance in the $x$ and $y$ directions between predator and prey, the
-state space is reduced to $N^2$ states, and the policy evaluation algorithm is
-then $\mathcal{O}(N^2)$. Quantitative performance measurements can be seen in table
-\ref{tbl:performance}.
 
 \section*{Conclusion}
 As value iteration is significantly faster than policy improvement while
