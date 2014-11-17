@@ -1,12 +1,41 @@
 from environment import *
 from collections import defaultdict
 from random import random, choice
+from math import exp
 import matplotlib.pyplot as plt
 
 actions = [(1, 0), (0, 1), (-1, 0), (0, -1), (0, 0)]
 
+def epsilon_greedy(epsilon):
+    """
+    Return an epsilon-greedy policy function with the given value of epsilon.
+    """
+    def f(state, Q):
+        if random() > epsilon:
+            # take the best action
+            return best_move(state, Q)
+        else:
+            # take a random action
+            return choice(actions)
+
+    return f
+
+def softmax(temp):
+    """
+    Return a softmax policy function with the given value for the temprature.
+    """
+    def f(state, Q):
+        probs = []
+        for a in actions:
+            probs.append(exp(Q[(state, a)] / temp) /
+                    sum([exp(Q[(state, b)] / temp) for b in actions]))
+
+        return sample(actions, probs)
+
+    return f
+
 def qlearning(begin_state, initial_value=15, num_episodes=10000, alpha=0.2,
-        gamma=0.5, epsilon=0.1, plot=False):
+        gamma=0.5, selection_func=epsilon_greedy(0.1), plot=False):
     """
     Estimate an action-value function Q using the Q-learning algorithm.
     begin_state: initial state of each episode
@@ -14,7 +43,8 @@ def qlearning(begin_state, initial_value=15, num_episodes=10000, alpha=0.2,
     num_episodes: number of episodes to simulate before returning
     plot: Plot the performance of the agent over time
     alpha, gamma: discount factors
-    epsilon: epsilon parameter used for the epsilon-greedy policy
+    selection_func: The action selection functions. Gets passed the state and Q
+    as its parameters.
     """
 
     Q = defaultdict(lambda: initial_value)
@@ -29,7 +59,7 @@ def qlearning(begin_state, initial_value=15, num_episodes=10000, alpha=0.2,
 
         while not terminal(state):
             num_steps += 1
-            action = epsilon_greedy(state, Q, epsilon)
+            action = selection_func(state, Q)
             newstate = update_state(state, action)
             r = reward(newstate)
             Q[(state, action)] += alpha * \
@@ -49,16 +79,3 @@ def qlearning(begin_state, initial_value=15, num_episodes=10000, alpha=0.2,
 def best_move(state, Q):
     "Return the best move in a state given the action-value function Q"
     return max(actions, key=lambda a: Q[(state, a)])
-
-def epsilon_greedy(state, Q, epsilon):
-    """
-    Take an action using an epsilon-greedy policy (there is an epsilon chance
-    of taking a random action, and a 1-epsilon chance of taking the optimal
-    action).
-    """
-    if random() > epsilon:
-        # take the best action
-        return best_move(state, Q)
-    else:
-        # take a random action
-        return choice(actions)
