@@ -35,7 +35,8 @@ def softmax(temp):
     return f
 
 def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.2,
-        gamma=0.5, selection_func=epsilon_greedy(0.1), plot=False):
+        gamma=0.5, selection_func=epsilon_greedy(0.1), plot=False,
+        return_steps=False):
     """
     Estimate an action-value function Q using the Q-learning algorithm.
     begin_state: initial state of each episode
@@ -75,7 +76,10 @@ def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.2,
         plt.plot(range(len(steps)), steps)
         plt.show()
 
-    return Q
+    if return_steps:
+        return steps
+    else:
+        return Q
 
 def best_move(state, Q):
     "Return the best move in a state given the action-value function Q"
