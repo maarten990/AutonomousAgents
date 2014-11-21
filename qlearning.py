@@ -34,7 +34,7 @@ def softmax(temp):
 
     return f
 
-def qlearning(begin_state, initial_value=15, num_episodes=10000, alpha=0.2,
+def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.2,
         gamma=0.5, selection_func=epsilon_greedy(0.1), plot=False):
     """
     Estimate an action-value function Q using the Q-learning algorithm.
@@ -61,6 +61,7 @@ def qlearning(begin_state, initial_value=15, num_episodes=10000, alpha=0.2,
             num_steps += 1
             action = selection_func(state, Q)
             newstate = update_state(state, action)
+            newstate = update_prey(newstate)
             r = reward(newstate)
             Q[(state, action)] += alpha * \
                     (r + gamma * max([Q[(newstate, a)] for a in actions]) -
