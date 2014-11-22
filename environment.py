@@ -93,6 +93,23 @@ def update_state(state, direction):
 
     return (newx, newy)
 
+def update_prey(state):
+    # can't escape if the predator is on top of the prey
+    if state == (0, 0):
+        return state
+
+    dist_x, dist_y = state
+
+    # filter the directions to avoid moving into the predator
+    new_states = [(dist_x + x, dist_y + y) for x, y in prey_directions if
+            (dist_x + x, dist_y + y) != (0, 0)]
+
+    # there is a 0.8 chance of action staying still (the first action in the
+    # list) and an equal probability of all other actions
+    probabilities = [0.8] + [0.2 / len(new_states[1:]) for _ in new_states[1:]]
+
+    return sample(new_states, probabilities)
+
 def all_states():
     for xdiff in range(-5, 6):
         for ydiff in range(-5, 6):
