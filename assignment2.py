@@ -69,6 +69,9 @@ def plot_performance(policy, fit, episodes):
             steps = negative_exp_regression(array(xs), array(steps))
 
         plt.plot(xs, steps, label=r'$\alpha: {0}$'.format(alpha))
+        plt.xlabel('Age')
+        plt.ylabel('Daily dosis of sex (in orgasms)')
+        plt.title('Maartens Sex Life')
 
     plt.ylim((0, 100))
     plt.legend()
