@@ -96,7 +96,7 @@ def question_a(fit, episodes):
     perform Q-learning with epsilon greedy action selection and and plot the
     performance over time for various values for alpha and gamma.
     """
-    plot_performance(epsilon_greedy(0.1))
+    plot_performance(epsilon_greedy(0.1), fit, episodes)
             
 
 def question_b():
