@@ -3,8 +3,7 @@
 
 from environment import *
 from qlearning import *
-from numpy import std, average, exp, array
-from scipy.optimize import curve_fit
+from numpy import std, average, exp, array, convolve
 import random, argparse
 import matplotlib.pyplot as plt
 
@@ -49,15 +48,7 @@ def print_policy(Q, prey_position):
         print '|' + '|'.join(row) + '|'
     print '\n'
 
-def negative_exp_regression(xs, ys):
-    "Fit a function f = (a exp(-b x) + c) to the given data."
-    f = lambda x, a, b, c: a * exp(-b * x) + c
-    (a, b, c), _ = curve_fit(f, xs, ys)
-    new_ys = map(lambda x: f(x, a, b, c), xs)
-
-    return new_ys
-
-def plot_performance(policy, fit, episodes):
+def plot_performance(policy, smooth, episodes):
     # plot alpha values
     plt.hold(True)
     for alpha in [0.1, 0.2, 0.3, 0.4, 0.5]:
@@ -65,8 +56,8 @@ def plot_performance(policy, fit, episodes):
                 selection_func=policy, return_steps=True)
         xs = range(len(steps))
 
-        if fit:
-            steps = negative_exp_regression(array(xs), array(steps))
+        if smooth:
+            steps = convolve(steps, array([1] * 9) / 9.0, mode='same')
 
         plt.plot(xs, steps, label=r'$\alpha: {0}$'.format(alpha))
         plt.xlabel('Age')
@@ -85,32 +76,32 @@ def plot_performance(policy, fit, episodes):
                 selection_func=policy, return_steps=True)
         xs = range(len(steps))
 
-        if fit:
-            steps = negative_exp_regression(array(xs), array(steps))
+        if smooth:
+            steps = convolve(steps, array([1] * 9) / 9.0, mode='same')
 
         plt.plot(xs, steps, label=r'$\gamma: {0}$'.format(gamma))
 
-    plt.ylim((0, 100))
+    plt.ylim((0, 50))
     plt.legend()
     plt.show()
 
-def question_a(fit, episodes):
+def question_a(smooth, episodes):
     """
     perform Q-learning with epsilon greedy action selection and and plot the
     performance over time for various values for alpha and gamma.
     """
-    plot_performance(epsilon_greedy(0.1), fit, episodes)
+    plot_performance(epsilon_greedy(0.1), smooth, episodes)
             
 
 def question_b():
     print "To do"
 
-def question_c(temperature, fit, episodes):
+def question_c(temperature, smooth, episodes):
     """
     perform Q-learning with softmax action selection and and plot the
     performance over time for various values for alpha and gamma.
     """
-    plot_performance(softmax(temperature), fit, episodes)
+    plot_performance(softmax(temperature), smooth, episodes)
 
 def question_d():
     print "To do"
@@ -119,7 +110,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('question', help='the subquestion to execute',
             choices=['a', 'b', 'c', 'd'])
-    parser.add_argument('-f', '--fit', help='approximate plots with an exponential fit',
+    parser.add_argument('-s', '--smooth', help='smooth the plots',
             action='store_true')
     parser.add_argument('-e', '--episodes', help='number of episodes',
             nargs='?', default=1000, type=int)
@@ -128,8 +119,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    { 'a': lambda: question_a(args.fit, args.episodes),
+    { 'a': lambda: question_a(args.smooth, args.episodes),
       'b': lambda: question_b(),
-      'c': lambda: question_c(args.temperature, args.fit, args.episodes),
+      'c': lambda: question_c(args.temperature, args.smooth, args.episodes),
       'd': lambda: question_d()
     }[args.question]()
