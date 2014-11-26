@@ -111,8 +111,55 @@ def question_a(epsilon, smooth, episodes):
     plot_performance(epsilon_greedy(0.1), smooth, episodes)
             
 
-def question_b():
-    print "To do"
+def question_b(episodes, smooth):
+    repeat = 50 if smooth else 1
+
+    plt.hold(True)
+    for epsilon in [0, 0.1, 0.5, 0.9, 1]:
+        steps = []
+        print "epsilon {0}".format(epsilon)
+
+        for i in xrange(repeat):
+            print "trial {0}".format(i)
+
+            steps.append(qlearning(default_state, num_episodes=episodes,
+                selection_func=epsilon_greedy(epsilon), return_steps=True))
+
+        steps = average(array(steps), axis=0)
+        xs = range(len(steps))
+
+        plt.plot(xs, steps, label=r'$\epsilon: {0}$'.format(epsilon))
+
+    plt.title('Duration of simulation (averaged over {0} trials)'.format(repeat))
+    plt.grid(b=True, which='both', color='0.65',linestyle='-')
+    plt.xlabel('Episode')
+    plt.ylabel('Steps until prey dies horribly')
+    plt.ylim((0, 100))
+    plt.legend()
+    plt.show()
+
+    for value in [0, 5, 15, 50]:
+        steps = []
+        print "value {0}".format(value)
+
+        for i in xrange(repeat):
+            print "trial {0}".format(i)
+
+            steps.append(qlearning(default_state, num_episodes=episodes,
+                initial_value=value, return_steps=True))
+
+        steps = average(array(steps), axis=0)
+        xs = range(len(steps))
+
+        plt.plot(xs, steps, label=r'$\epsilon: {0}$'.format(epsilon))
+
+    plt.title('Duration of simulation (averaged over {0} trials)'.format(repeat))
+    plt.grid(b=True, which='both', color='0.65',linestyle='-')
+    plt.xlabel('Episode')
+    plt.ylabel('Steps until prey dies horribly')
+    plt.ylim((0, 100))
+    plt.legend()
+    plt.show()
 
 def question_c(temperature, smooth, episodes):
     """
@@ -142,7 +189,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     { 'a': lambda: question_a(args.epsilon, args.smooth, args.episodes),
-      'b': lambda: question_b(),
+      'b': lambda: question_b(args.episodes, args.smooth),
       'c': lambda: question_c(args.temperature, args.smooth, args.episodes),
       'd': lambda: question_d()
     }[args.question]()
