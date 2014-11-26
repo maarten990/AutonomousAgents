@@ -168,10 +168,35 @@ def question_c(temperature, smooth, episodes):
     """
     plot_performance(softmax(temperature), smooth, episodes)
 
-def question_d():
-    print "Performing sarsa"
-    Q = sarsa(default_state, alpha=0.5)
-    print_policy(Q, (5, 5))
+def question_d(episodes, smooth):
+    repeat = 50 if smooth else 1
+
+    plt.hold(True)
+    steps = []
+
+    for i in xrange(repeat):
+        print "Sarsa trial {0}".format(i)
+
+        steps.append(sarsa(default_state, num_episodes=episodes,
+            return_steps=True))
+
+    steps = average(array(steps), axis=0)
+    xs = range(len(steps))
+
+    plt.plot(xs, steps, label='Sarsa')
+
+    steps = []
+    for i in xrange(repeat):
+        print "Sarsa trial {0}".format(i)
+
+        steps.append(qlearning(default_state, num_episodes=episodes,
+            return_steps=True))
+
+    steps = average(array(steps), axis=0)
+    xs = range(len(steps))
+
+    plt.plot(xs, steps, label='Q-learning')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -191,5 +216,5 @@ if __name__ == '__main__':
     { 'a': lambda: question_a(args.epsilon, args.smooth, args.episodes),
       'b': lambda: question_b(args.episodes, args.smooth),
       'c': lambda: question_c(args.temperature, args.smooth, args.episodes),
-      'd': lambda: question_d()
+      'd': lambda: question_d(args.episodes, args.smooth)
     }[args.question]()
