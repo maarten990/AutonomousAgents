@@ -51,21 +51,27 @@ def print_policy(Q, prey_position):
 
 def plot_performance(policy, smooth, episodes):
     # plot alpha values
+    repeat = 10 if smooth else 1
     plt.hold(True)
     for alpha in [0.1, 0.2, 0.3, 0.4, 0.5]:
-        steps = qlearning(default_state, num_episodes=episodes, alpha=alpha,
-                selection_func=policy, return_steps=True)
+        steps = []
+        print "alpha {0}".format(alpha)
+
+        for i in xrange(repeat):
+            print "trial {0}".format(i)
+
+            steps.append(qlearning(default_state, num_episodes=episodes, alpha=alpha,
+                selection_func=policy, return_steps=True))
+
+        steps = average(array(steps), axis=0)
         xs = range(len(steps))
 
-        if smooth:
-            steps = convolve(steps, array([1] * 9) / 9.0, mode='same')
-
         plt.plot(xs, steps, label=r'$\alpha: {0}$'.format(alpha))
-        plt.grid(b=True, which='both', color='0.65',linestyle='-')
-        plt.xlabel('Age')
-        plt.ylabel('Daily dosis of sex (in orgasms)')
-        plt.title('Maartens Sex Life')
 
+    plt.title('Duration of simulation (averaged over {0} trials'.format(repeat))
+    plt.grid(b=True, which='both', color='0.65',linestyle='-')
+    plt.xlabel('Episode')
+    plt.ylabel('Steps until prey dies horribly')
     plt.ylim((0, 100))
     plt.legend()
     plt.show()
@@ -75,17 +81,26 @@ def plot_performance(policy, smooth, episodes):
     plt.grid(b=True, which='both', color='0.65',linestyle='-')
     plt.hold(True)
     for gamma in [0.1, 0.5, 0.7, 0.9]:
-        steps = qlearning(default_state, num_episodes=episodes,
-                selection_func=policy, return_steps=True)
+        steps = []
+        print "gamma {0}".format(gamma)
+
+        for i in xrange(repeat):
+            print "trial {0}".format(i)
+
+            steps.append(qlearning(default_state, num_episodes=episodes, alpha=alpha,
+                selection_func=policy, return_steps=True))
+
+        steps = average(array(steps), axis=0)
         xs = range(len(steps))
 
-        if smooth:
-            steps = convolve(steps, array([1] * 9) / 9.0, mode='same')
-
-
         plt.plot(xs, steps, label=r'$\gamma: {0}$'.format(gamma))
-        plt.ylim((0, 100))
-        plt.legend()
+
+    plt.title('Duration of simulation (averaged over {0} trials'.format(repeat))
+    plt.ylim((0, 100))
+    plt.legend()
+    plt.grid(b=True, which='both', color='0.65',linestyle='-')
+    plt.xlabel('Episode')
+    plt.ylabel('Steps until prey dies horribly')
     plt.show()
 
 def question_a(epsilon, smooth, episodes):
@@ -118,9 +133,9 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--smooth', help='smooth the plots',
             action='store_true')
     parser.add_argument('-e', '--episodes', help='number of episodes',
-            nargs='?', default=1000, type=int)
+            nargs='?', default=5000, type=int)
     parser.add_argument('-t', '--temperature', help='the temperature used for softmax',
-            nargs='?', default=5.0, type=float)
+            nargs='?', default=1.0, type=float)
     parser.add_argument('-eps', '--epsilon', help='the epsilon used for epsilon-greedy',
             nargs='?', default=0.1, type=float)
 
