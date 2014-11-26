@@ -61,6 +61,7 @@ def plot_performance(policy, smooth, episodes):
             steps = convolve(steps, array([1] * 9) / 9.0, mode='same')
 
         plt.plot(xs, steps, label=r'$\alpha: {0}$'.format(alpha))
+        plt.grid(b=True, which='both', color='0.65',linestyle='-')
         plt.xlabel('Age')
         plt.ylabel('Daily dosis of sex (in orgasms)')
         plt.title('Maartens Sex Life')
@@ -71,6 +72,7 @@ def plot_performance(policy, smooth, episodes):
 
     # plot gamma values
     plt.figure()
+    plt.grid(b=True, which='both', color='0.65',linestyle='-')
     plt.hold(True)
     for gamma in [0.1, 0.5, 0.7, 0.9]:
         steps = qlearning(default_state, num_episodes=episodes,
@@ -80,10 +82,10 @@ def plot_performance(policy, smooth, episodes):
         if smooth:
             steps = convolve(steps, array([1] * 9) / 9.0, mode='same')
 
-        plt.plot(xs, steps, label=r'$\gamma: {0}$'.format(gamma))
 
-    plt.ylim((0, 50))
-    plt.legend()
+        plt.plot(xs, steps, label=r'$\gamma: {0}$'.format(gamma))
+        plt.ylim((0, 100))
+        plt.legend()
     plt.show()
 
 def question_a(epsilon, smooth, episodes):
