@@ -34,7 +34,7 @@ def softmax(temp):
 
     return f
 
-def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.2,
+def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
         gamma=0.5, selection_func=epsilon_greedy(0.1), plot=False,
         return_steps=False):
     """
