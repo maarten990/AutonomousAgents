@@ -68,7 +68,7 @@ def plot_performance(policy, smooth, episodes):
 
         plt.plot(xs, steps, label=r'$\alpha: {0}$'.format(alpha))
 
-    plt.title('Duration of simulation (averaged over {0} trials'.format(repeat))
+    plt.title('Duration of simulation (averaged over {0} trials)'.format(repeat))
     plt.grid(b=True, which='both', color='0.65',linestyle='-')
     plt.xlabel('Episode')
     plt.ylabel('Steps until prey dies horribly')
@@ -87,7 +87,7 @@ def plot_performance(policy, smooth, episodes):
         for i in xrange(repeat):
             print "trial {0}".format(i)
 
-            steps.append(qlearning(default_state, num_episodes=episodes, alpha=alpha,
+            steps.append(qlearning(default_state, num_episodes=episodes, gamma=gamma,
                 selection_func=policy, return_steps=True))
 
         steps = average(array(steps), axis=0)
@@ -95,7 +95,7 @@ def plot_performance(policy, smooth, episodes):
 
         plt.plot(xs, steps, label=r'$\gamma: {0}$'.format(gamma))
 
-    plt.title('Duration of simulation (averaged over {0} trials'.format(repeat))
+    plt.title('Duration of simulation (averaged over {0} trials)'.format(repeat))
     plt.ylim((0, 100))
     plt.legend()
     plt.grid(b=True, which='both', color='0.65',linestyle='-')
