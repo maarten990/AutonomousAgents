@@ -3,6 +3,7 @@
 
 from environment import *
 from qlearning import *
+from sarsa import sarsa
 from numpy import std, average, exp, array, convolve
 import random, argparse
 import matplotlib.pyplot as plt
@@ -85,7 +86,7 @@ def plot_performance(policy, smooth, episodes):
     plt.legend()
     plt.show()
 
-def question_a(smooth, episodes):
+def question_a(epsilon, smooth, episodes):
     """
     perform Q-learning with epsilon greedy action selection and and plot the
     performance over time for various values for alpha and gamma.
@@ -104,7 +105,9 @@ def question_c(temperature, smooth, episodes):
     plot_performance(softmax(temperature), smooth, episodes)
 
 def question_d():
-    print "To do"
+    print "Performing sarsa"
+    Q = sarsa(default_state, alpha=0.5)
+    print_policy(Q, (5, 5))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -116,10 +119,12 @@ if __name__ == '__main__':
             nargs='?', default=1000, type=int)
     parser.add_argument('-t', '--temperature', help='the temperature used for softmax',
             nargs='?', default=5.0, type=float)
+    parser.add_argument('-eps', '--epsilon', help='the epsilon used for epsilon-greedy',
+            nargs='?', default=0.1, type=float)
 
     args = parser.parse_args()
 
-    { 'a': lambda: question_a(args.smooth, args.episodes),
+    { 'a': lambda: question_a(args.epsilon, args.smooth, args.episodes),
       'b': lambda: question_b(),
       'c': lambda: question_c(args.temperature, args.smooth, args.episodes),
       'd': lambda: question_d()
