@@ -162,11 +162,31 @@ def question_b(episodes, smooth):
     plt.show()
 
 def question_c(temperature, smooth, episodes):
-    """
-    perform Q-learning with softmax action selection and and plot the
-    performance over time for various values for alpha and gamma.
-    """
-    plot_performance(softmax(temperature), smooth, episodes)
+    repeat = 50 if smooth else 1
+
+    plt.hold(True)
+    for temp in [0.1, 0.5, 1, 5]:
+        steps = []
+        print "temperature {0}".format(temp)
+
+        for i in xrange(repeat):
+            print "trial {0}".format(i)
+
+            steps.append(qlearning(default_state, num_episodes=episodes,
+                selection_func=softmax(temp), return_steps=True))
+
+        steps = average(array(steps), axis=0)
+        xs = range(len(steps))
+
+        plt.plot(xs, steps, label=r'$\tau$: {0}$'.format(temp))
+
+    plt.title('Duration of simulation (averaged over {0} trials)'.format(repeat))
+    plt.grid(b=True, which='both', color='0.65',linestyle='-')
+    plt.xlabel('Episode')
+    plt.ylabel('Steps until prey dies horribly')
+    plt.ylim((0, 100))
+    plt.legend()
+    plt.show()
 
 def question_d(episodes, smooth):
     repeat = 50 if smooth else 1
