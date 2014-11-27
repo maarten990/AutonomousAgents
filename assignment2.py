@@ -151,7 +151,7 @@ def question_b(episodes, smooth):
         steps = average(array(steps), axis=0)
         xs = range(len(steps))
 
-        plt.plot(xs, steps, label=r'$\epsilon: {0}$'.format(epsilon))
+        plt.plot(xs, steps, label=r'$Initial value: {0}$'.format(value))
 
     plt.title('Duration of simulation (averaged over {0} trials)'.format(repeat))
     plt.grid(b=True, which='both', color='0.65',linestyle='-')
