@@ -115,7 +115,7 @@ def question_b(episodes, smooth):
     repeat = 50 if smooth else 1
 
     plt.hold(True)
-    for epsilon in [0, 0.1, 0.5, 0.9, 1]:
+    for epsilon in [0, 0.1, 0.5, 0.9]:
         steps = []
         print "epsilon {0}".format(epsilon)
 
@@ -196,6 +196,14 @@ def question_d(episodes, smooth):
     xs = range(len(steps))
 
     plt.plot(xs, steps, label='Q-learning')
+
+    plt.title('Duration of simulation (averaged over {0} trials)'.format(repeat))
+    plt.grid(b=True, which='both', color='0.65',linestyle='-')
+    plt.xlabel('Episode')
+    plt.ylabel('Steps until prey dies horribly')
+    plt.ylim((0, 100))
+    plt.legend()
+    plt.show()
 
 
 if __name__ == '__main__':
