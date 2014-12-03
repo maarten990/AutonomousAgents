@@ -1,0 +1,5 @@
+http://lpsolve.sourceforge.net/5.5/distribution.htm
+
+omdat we allemaal andere OSes hebben.
+
+pak ook de driver (ctrl+f python)
