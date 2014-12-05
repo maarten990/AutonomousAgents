@@ -4,6 +4,8 @@ from random import random, choice
 from math import exp
 import matplotlib.pyplot as plt
 
+#ATM kopie van qlearning. moet nog independent worden.
+
 actions = [(1, 0), (0, 1), (-1, 0), (0, -1), (0, 0)]
 
 def epsilon_greedy(epsilon):
@@ -17,20 +19,6 @@ def epsilon_greedy(epsilon):
         else:
             # take a random action
             return choice(actions)
-
-    return f
-
-def softmax(temp):
-    """
-    Return a softmax policy function with the given value for the temprature.
-    """
-    def f(state, Q):
-        probs = []
-        for a in actions:
-            probs.append(exp(Q[(state, a)] / temp) /
-                    sum([exp(Q[(state, b)] / temp) for b in actions]))
-
-        return sample(actions, probs)
 
     return f
 

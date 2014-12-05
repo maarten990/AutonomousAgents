@@ -2,39 +2,12 @@ from environment import *
 from collections import defaultdict
 from random import random, choice
 from math import exp
+from qlearning import epsilon_greedy, softmax, best_move
 import matplotlib.pyplot as plt
 
 actions = [(1, 0), (0, 1), (-1, 0), (0, -1), (0, 0)]
 
-def epsilon_greedy(epsilon):
-    """
-    Return an epsilon-greedy policy function with the given value of epsilon.
-    """
-    def f(state, Q):
-        if random() > epsilon:
-            # take the best action
-            return best_move(state, Q)
-        else:
-            # take a random action
-            return choice(actions)
-
-    return f
-
-def softmax(temp):
-    """
-    Return a softmax policy function with the given value for the temprature.
-    """
-    def f(state, Q):
-        probs = []
-        for a in actions:
-            probs.append(exp(Q[(state, a)] / temp) /
-                    sum([exp(Q[(state, b)] / temp) for b in actions]))
-
-        return sample(actions, probs)
-
-    return f
-
-def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
+def sarsa(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
         gamma=0.5, selection_func=epsilon_greedy(0.1), plot=False,
         return_steps=False):
     """
@@ -64,9 +37,10 @@ def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
             newstate = update_state(state, action)
             newstate = update_prey(newstate)
             r = reward(newstate)
-            Q[(state, action)] += alpha * \
-                    (r + gamma * max([Q[(newstate, a)] for a in actions]) -
-                            Q[(state, action)])
+
+            newaction = selection_func(newstate, Q)
+            Q[(state, action)] += alpha * (r + gamma * Q[(newstate, newaction)]
+                    - Q[(state, action)])
 
             state = newstate
 
@@ -80,7 +54,3 @@ def qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
         return steps
     else:
         return Q
-
-def best_move(state, Q):
-    "Return the best move in a state given the action-value function Q"
-    return max(actions, key=lambda a: Q[(state, a)])
