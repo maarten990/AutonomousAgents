@@ -56,7 +56,7 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
     # vector of the number of steps it takes to catch the prey, used for
     # plotting. And one to decide who won
     steps = []
-    prey_died_horribly = []
+    roasted_bunnies = []
 
     for episode in xrange(num_episodes):
         state = begin_state
@@ -75,6 +75,7 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
             state = newstate
 
         steps.append(num_steps)
+        roasted_bunnies.append(prey_died_horribly())
 
     if plot:
         plt.plot(range(len(steps)), steps)
