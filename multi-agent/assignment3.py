@@ -1,4 +1,4 @@
-from environment import *
+from environment,independent_qlearning import *
 from random import choice
 
 class RandomPredatorPolicy:
@@ -29,17 +29,22 @@ def question1():
 
     print "Reward: {0}".format(reward(state))
 
+def question2():
+    state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
+    print_state(state)
+    independent_qlearning(state)
+
+
 def question3():
     """
-    Dit doet Ties!!!
-    """
+
     Variabeles:
     V
     p1,...,p5
 
     Maximize V
     s.t.
-    
+
     p1 + p2 + p3 + p4 + p5 = 1
     p1 >= 0
     p2 >= 0
@@ -47,11 +52,13 @@ def question3():
     p4 >= 0
     p5 >= 0
 
-    V = max_()
+    en een belangrijke sigma constraint!!
+
+    """
 
 def main():
 
-    question1()
+    question2()
     
 
 if __name__ == '__main__':
