@@ -66,17 +66,14 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
 
         while not terminal(state):
 
+            #update environe
             num_steps += 1
+            newstate = update_state(state, action)
+            newstate = update_prey(newstate)
 
             for i in range(agents):
-                if i==0:
-                    newstate = update_state(state, action)
-                else:
-                    newstate = update_state(state,action)
-
                 action = selection_func(state, Q)
-                newstate = update_state(state, action)
-                newstate = update_prey(newstate)
+                
 
                 #for all agents
                 r = reward(newstate)
