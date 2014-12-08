@@ -52,11 +52,11 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
 
     agents = len(begin_state) + 1
 
-    print agents
 
     # vector of the number of steps it takes to catch the prey, used for
-    # plotting
+    # plotting. And one to decide who won
     steps = []
+    prey_died_horribly = []
 
     for episode in xrange(num_episodes):
         state = begin_state

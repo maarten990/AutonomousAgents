@@ -58,6 +58,12 @@ def reward(state):
     else:
         return (0, 0)
 
+def prey_died_horribly(state):
+    if reward(state) == (10,-10):
+        return True
+    else:
+        return False
+
 def sample(directions, probabilities):
     """
     Given a list of directions, randomly select one according to a list of

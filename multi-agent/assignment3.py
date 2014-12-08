@@ -1,4 +1,5 @@
-from environment,independent_qlearning import *
+from environment import *
+from independent_qlearning import *
 from random import choice
 
 class RandomPredatorPolicy:
@@ -15,6 +16,22 @@ class RandomPolicy:
     
     def __call__(self, state):
         return choice(self.actions)
+
+def testion1():
+    pred_policy = RandomPredatorPolicy(possible_actions, 3)
+    prey_policy = RandomPolicy(possible_actions)
+
+    state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
+
+    runs=0
+    while not prey_died_horribly(state):
+        state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
+        while not terminal(state):
+            state = step(state, pred_policy, prey_policy)
+            print_state(state)
+        runs +=1
+
+    print "Reward: {0}, \nRuns:{1}".format(reward(state),runs)
 
 def question1():
     pred_policy = RandomPredatorPolicy(possible_actions, 3)
@@ -58,6 +75,7 @@ def question3():
 
 def main():
 
+    #testion1()
     question2()
     
 
