@@ -16,7 +16,7 @@ class RandomPolicy:
     def __call__(self, state):
         return choice(self.actions)
 
-def main():
+def question1():
     pred_policy = RandomPredatorPolicy(possible_actions, 3)
     prey_policy = RandomPolicy(possible_actions)
 
@@ -28,6 +28,16 @@ def main():
         print_state(state)
 
     print "Reward: {0}".format(reward(state))
+
+def question3():
+    """
+    Dit doet Ties!!!
+    """
+
+def main():
+
+    question1()
+    
 
 if __name__ == '__main__':
     main()
