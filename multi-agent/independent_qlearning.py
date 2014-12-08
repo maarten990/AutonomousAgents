@@ -48,9 +48,11 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
     as its parameters.
     """
 
-    Qs = defaultdict(lambda: initial_value)
-
     agents = len(begin_state) + 1
+
+    # Q[0] is the Q for the prey
+    # Q[x!=0] is the Q for predator x
+    Qs = [defaultdict(lambda: initial_value) for _ in range(agents)]
 
 
     # vector of the number of steps it takes to catch the prey, used for
@@ -63,19 +65,29 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
         num_steps = 0
 
         while not terminal(state):
-            num_steps += 1
-            action = selection_func(state, Q)
-            newstate = update_state(state, action)
-            newstate = update_prey(newstate)
-            r = reward(newstate)
-            Q[(state, action)] += alpha * \
-                    (r + gamma * max([Q[(newstate, a)] for a in actions]) -
-                            Q[(state, action)])
 
-            state = newstate
+            num_steps += 1
+
+            for i in range(agents):
+                if i==0:
+                    newstate = update_state(state, action)
+                else:
+                    newstate = update_state(state,action)
+
+                action = selection_func(state, Q)
+                newstate = update_state(state, action)
+                newstate = update_prey(newstate)
+
+                #for all agents
+                r = reward(newstate)
+                Q[(state, action)] += alpha * \
+                        (r + gamma * max([Q[(newstate, a)] for a in actions]) -
+                                Q[(state, action)])
+
+                state = newstate
 
         steps.append(num_steps)
-        roasted_bunnies.append(prey_died_horribly())
+        roasted_bunnies.append(prey_died_horribly(state))
 
     if plot:
         plt.plot(range(len(steps)), steps)
