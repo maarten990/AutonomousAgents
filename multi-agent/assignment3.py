@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 from environment import *
 from independent_qlearning import *
 from random import choice
@@ -47,9 +50,9 @@ def question1():
     print "Reward: {0}".format(reward(state))
 
 def question2():
-    state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
-    print_state(state)
-    independent_qlearning(state)
+    #state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
+    state = initialise_state([(10, 10), (10, 0)], (5, 5))
+    independent_qlearning(state, num_episodes=5000, plot_winner=True)
 
 
 def question3():
