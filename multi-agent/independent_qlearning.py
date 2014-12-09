@@ -35,8 +35,8 @@ def softmax(temp):
     return f
 
 def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
-        gamma=0.5, selection_func=epsilon_greedy(0.1), plot=False,
-        return_steps=False):
+        gamma=0.5, selection_func=epsilon_greedy(0.1), plot_winner=False,
+        plot_duration=False, return_steps=False):
     """
     Estimate an action-value function Q using the Q-learning algorithm.
     begin_state: initial state of each episode
@@ -48,46 +48,58 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
     as its parameters.
     """
 
-    agents = len(begin_state) + 1
+    num_predators = len(begin_state)
 
-    # Q[0] is the Q for the prey
-    # Q[x!=0] is the Q for predator x
-    Qs = [defaultdict(lambda: initial_value) for _ in range(agents)]
-
+    # keep a seperate Q dict for each agent
+    Qpreds = [defaultdict(lambda: initial_value) for _ in range(num_predators)]
+    Qprey = defaultdict(lambda: initial_value)
 
     # vector of the number of steps it takes to catch the prey, used for
     # plotting. And one to decide who won
     steps = []
-    roasted_bunnies = []
+    winners = []
 
     for episode in xrange(num_episodes):
         state = begin_state
         num_steps = 0
 
         while not terminal(state):
-
-            #update environe
             num_steps += 1
-            newstate = update_state(state, action)
-            newstate = update_prey(newstate)
 
-            for i in range(agents):
-                action = selection_func(state, Q)
-                
+            # update environment
+            # all decisions are taken at the same time (so based on the old
+            # state)
+            pred_actions = []
+            for Q in Qpreds:
+                pred_actions.append(selection_func(state, Q))
 
-                #for all agents
-                r = reward(newstate)
+            prey_action = selection_func(state, Qprey)
+            newstate = step(state, pred_actions, prey_action)
+
+            r_pred, r_prey = reward(newstate)
+
+            # update the Q values for the new state and each agent's action
+            for Q, action in zip(Qpreds, pred_actions):
                 Q[(state, action)] += alpha * \
-                        (r + gamma * max([Q[(newstate, a)] for a in actions]) -
-                                Q[(state, action)])
+                        (r_pred + gamma * max([Q[(newstate, a)] for a in actions])
+                                - Q[(state, action)])
 
-                state = newstate
+            Qprey[(state, prey_action)] += alpha * \
+                    (r_prey + gamma * max([Qprey[(newstate, a)] for a in actions])
+                            - Qprey[(state, prey_action)])
+
+            state = newstate
 
         steps.append(num_steps)
-        roasted_bunnies.append(prey_died_horribly(state))
+        winners.append(1 if reward(state)[0] > 0 else -1)
 
-    if plot:
+    if plot_winner:
+        plt.scatter(range(len(winners)), winners)
+        plt.show()
+    if plot_duration:
+        plt.hold(True)
         plt.plot(range(len(steps)), steps)
+        plt.ylim((0, 100))
         plt.show()
 
     if return_steps:

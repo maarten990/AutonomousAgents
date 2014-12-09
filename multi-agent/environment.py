@@ -1,6 +1,6 @@
 # coding=utf-8
 
-# The state representation is a list containings tuples of the difference in
+# The state representation is a tuple containing tuples of the difference in
 # position between the predator and prey in the x and y directions. Each list
 # element represents one predator. Distances are directional depending on their
 # sign. As we're on a toroidal 11x11 grid, the distances are in the range from
@@ -21,19 +21,22 @@ def initialise_state(predator_positions, prey_position):
 
     return tuple(state)
 
-def step(state, predator_policy, prey_policy):
+def step(state, predator_moves, prey_move):
     """
     Advance the state by one step using the given policy.
     The policy is a dictionary mapping the state to an action performed by the
     predator.
     """
-    predator_moves = predator_policy(state)
     new_state = []
 
     for move, s in zip(predator_moves, state):
         new_state.append(update_state(s, move))
 
-    prey_x, prey_y = prey_policy(state)
+    # chance to trip!
+    if numpy.random.random() <= 0.2:
+        prey_x, prey_y = (0, 0)
+    else:
+        prey_x, prey_y = prey_move
 
     # with our representation, the prey moving is equivalent to a predator
     # moving in the opposite direction
