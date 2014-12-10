@@ -16,7 +16,7 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 		num_pred     = current_batch[4]
 
 
-		filebase = "data/{0}:p={1},{2}={3}".format(algorithm,num_pred,changevar,var_value)
+		filebase = "data/{0}.p={1},{2}={3}".format(algorithm,num_pred,changevar,var_value)
 		if os.path.isfile(filebase+ '.winners.csv') and  os.path.isfile(filebase+ '.steps.csv'):
 			print 'Experiment allready contucted, skiping . . .'
 		else:
@@ -27,10 +27,10 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 				state = initialise_state([(10, 10)], (5, 5))
 			elif num_pred ==2:
 				state = initialise_state([(10, 10), (10, 0)], (5, 5))
-			elif num_pred ==2:
+			elif num_pred ==3:
 				state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))	
 			else:
-				'ERROOROROREOROEROEROERORREORO'
+				print 'ERROOROROREOROEROEROERORREORO'
 
 			# Preallocate
 			winners_mat = [];
