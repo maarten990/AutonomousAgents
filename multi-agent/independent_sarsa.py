@@ -35,8 +35,7 @@ def softmax(temp):
     return f
 
 def independent_sarsa(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
-        gamma=0.5, selection_func=epsilon_greedy(0.1), plot_winner=False,
-        plot_duration=False, return_steps=False):
+        gamma=0.5, selection_func=epsilon_greedy(0.1), return_steps=True):
     """
     Estimate an action-value function Q using the SARSA algorithm.
     begin_state: initial state of each episode
@@ -93,56 +92,11 @@ def independent_sarsa(begin_state, initial_value=15, num_episodes=1000, alpha=0.
 
         steps.append(num_steps)
         # 1 means predator -1 means prey
-        winners.append(1 if reward(state)[0] > 0 else -1)
+        winners.append(1 if reward(state)[0] > 0 else 0)
 
-
-    episodes = range(len(winners))
-    #create tuples for prey and pred with the index of the episode on which they 
-    # won and the number of steps it took
-    prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==-1]
-    pred_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==1]
-
-    prey_episodes = [e for e,_ in prey_tup]
-    prey_steps = [-s for _,s in prey_tup]
-
-    pred_episodes = [e for e,_ in pred_tup]
-    pred_steps = [s for _,s in pred_tup]
-
-    if plot_winner:
-        plt.title('Funny game with {0} predators'.format(num_predators))
-
-        plt.show()
-    if plot_duration:
-
-        #plt.title('Funny game with {0} predators'.format(num_predators))
-        #plt.plot(range(len(steps)), steps)
-        #plt.ylabel('Steps untill game ends (prey or predator wins)')
-        #plt.xlabel('Episodes')
-        #plt.show()
-
-        plt.title('Funny game with {0} predators'.format(num_predators))
-
-        #plot the steps/episodes line
-        plt.scatter(prey_episodes,prey_steps,color='red')
-        plt.scatter(pred_episodes,pred_steps,color='blue')
-        plt.ylabel('Steps untill game ends (prey or predator wins)')
-        plt.xlabel('Episodes')
-        plt.show()
-
-    #plot the plot for prey and other separately
-    plt.title('Funny game with {0} predators'.format(num_predators))
-    plt.plot(range(len(prey_steps)),prey_steps)
-    plt.xlabel('Number of episodes where the prey wins')
-    plt.ylabel('Steps untill prey wins')
-    plt.show()
-    plt.title('Funny game with {0} predators'.format(num_predators))
-    plt.plot(range(len(pred_steps)),pred_steps)
-    plt.xlabel('Number of episodes where the predator wins')
-    plt.ylabel('Steps untill predator wins')
-    plt.show()
 
     if return_steps:
-        return steps
+        return steps, winners
     else:
         return Q
 
