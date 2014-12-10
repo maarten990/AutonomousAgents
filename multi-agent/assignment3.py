@@ -4,6 +4,7 @@
 from environment import *
 from independent_qlearning import *
 from random import choice
+import numpy as np
 
 class RandomPredatorPolicy:
     def __init__(self, actions, num_predators):
@@ -24,14 +25,14 @@ def plot_winner_scatter(steps,winners):
     """
     Plots an awesome scatterplot!
     Two lists of length of total episodes:
-        winners: keeping track of who won (1 = pred, -1=prey)
+        winners: keeping track of who won (1 = pred, 0=prey)
         steps: numer of steps to end game
     """
 
     episodes = range(len(winners))
     #create tuples for prey and pred with the index of the episode on which they 
     # won and the number of steps it took
-    prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==-1]
+    prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==0]
     pred_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==1]
 
     prey_episodes = [e for e,_ in prey_tup]
@@ -66,9 +67,35 @@ def question1():
 def question2():
     #state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
     state = initialise_state([(10, 10), (10, 0)], (5, 5))
-    plot_winner_scatter(*independent_qlearning(state, num_episodes=10000, return_steps=True))
-    plt.title('Funny game with 2 predators')
+    #plot_winner_scatter(*independent_qlearning(state, num_episodes=10000, return_steps=True))
+    #plt.title('Funny game with 2 predators')
+    #plt.show()
+
+    #Take averages
+    n=50
+    winners_mat = [];
+    steps_mat = [];
+    for i in range(n):
+        s,w = independent_qlearning(state, num_episodes=5000, return_steps=True)
+
+        winners_mat.append(w)
+        steps_mat.append(s)
+
+    steps  =  np.average(steps_mat,axis=0)
+    winners = np.average(winners_mat,axis=0)
+
+    fig, ax1 = plt.subplots()
+    ax1.plot(steps)
+    ax1.set_ylabel('Number of steps untill game ends')
+    ax1.set_xlabel('# of features')
+    ax1.yaxis.grid()
+    ax1.xaxis.grid()
+    ax2 = ax1.twinx()
+    ax2.plot(winners,'r')
+    ax2.set_ylabel('Number of times the predators won (Rrrrrrrr.. ed)')
     plt.show()
+    #np.array()
+
 
 
 

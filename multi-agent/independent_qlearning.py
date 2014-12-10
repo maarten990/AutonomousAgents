@@ -91,8 +91,8 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
             state = newstate
 
         steps.append(num_steps)
-        # 1 means predator -1 means prey
-        winners.append(1 if reward(state)[0] > 0 else -1)
+        # 1 means predator 0 means prey
+        winners.append(1 if reward(state)[0] > 0 else 0)
 
 
     if plot_winner:
