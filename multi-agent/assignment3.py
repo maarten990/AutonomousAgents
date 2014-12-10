@@ -20,21 +20,37 @@ class RandomPolicy:
     def __call__(self, state):
         return choice(self.actions)
 
-def testion1():
-    pred_policy = RandomPredatorPolicy(possible_actions, 3)
-    prey_policy = RandomPolicy(possible_actions)
+def plot_winner_scatter(winners,steps):
+    """
+    Plots an awesome scatterplot!
+    Two lists of length of total episodes:
+        winners: keeping track of who won (1 = pred, -1=prey)
+        steps: numer of steps to end game
+    """
 
-    state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
+    episodes = range(len(winners))
+    #create tuples for prey and pred with the index of the episode on which they 
+    # won and the number of steps it took
+    prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==-1]
+    pred_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==1]
 
-    runs=0
-    while not prey_died_horribly(state):
-        state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
-        while not terminal(state):
-            state = step(state, pred_policy, prey_policy)
-            print_state(state)
-        runs +=1
+    prey_episodes = [e for e,_ in prey_tup]
+    prey_steps = [-s for _,s in prey_tup]
 
-    print "Reward: {0}, \nRuns:{1}".format(reward(state),runs)
+    pred_episodes = [e for e,_ in pred_tup]
+    pred_steps = [s for _,s in pred_tup]
+    plt.title('Funny game with {0} predators'.format(num_predators))
+
+    #plot the steps/episodes line
+    plt.scatter(prey_episodes,prey_steps,color='red',s=1)
+    plt.scatter(pred_episodes,pred_steps,color='blue',s=1)
+    plt.grid()
+    plt.yticks(plt.yticks()[0], [abs(y) for y in plt.yticks()[0]] )
+    plt.ylabel('< Steps untill prey winds                  Steps untill predator wins>')
+    plt.xlabel('Episodes')
+    plt.xlim([0, len(episodes)])
+    plt.show()
+
 
 def question1():
     pred_policy = RandomPredatorPolicy(possible_actions, 3)
