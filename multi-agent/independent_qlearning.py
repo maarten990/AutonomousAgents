@@ -94,14 +94,6 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
         winners.append(1 if reward(state)[0] > 0 else 0)
 
 
-    if plot_winner:
-        plt.title('Funny game with {0} predators'.format(num_predators))
-
-        plt.show()
-    if plot_duration:
-
-        plot_winner_scatter(winner,steps)
-
     if return_steps:
         return steps, winners
     else:
