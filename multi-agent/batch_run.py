@@ -37,27 +37,27 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 			winners_mat = [];
 			steps_mat = [];
 
+			t0 = time.time()
+
 			# Run all the trials 
 			for _ in range(n):
-
-				t0 = time.time()
 
 				# DO IT BABY
 				s, w = eval(algo_func + "(state, num_episodes={0}, {1}={2})".format(num_episodes,changevar,var_value))
 
-				duurtlang = time.time() - t0
-
-				if duurtlang < 60:
-					print "{0:.2f}sec elapsed".format(duurtlang)
-				elif duurtlang < 60*60:
-					print "{0:.2f}min elapsed".format(duurtlang/60)
-				elif duurtlang < 60*60*24:
-					print "{0:.2f}h elapsed".format(duurtlang/60/60)
-				else:
-					print "fucking lang elapsed"
-
 				winners_mat.append(w)
 				steps_mat.append(s)
+
+
+			duurtlang = time.time() - t0
+			if duurtlang < 60:
+				print "{0:.2f}sec elapsed".format(duurtlang)
+			elif duurtlang < 60*60:
+				print "{0:.2f}min elapsed".format(duurtlang/60)
+			elif duurtlang < 60*60*24:
+				print "{0:.2f}h elapsed".format(duurtlang/60/60)
+			else:
+				print "fucking lang elapsed"
 
 			#Store results
 			np.savetxt(filebase + '.winners.csv',winners_mat)
