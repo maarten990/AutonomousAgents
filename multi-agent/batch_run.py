@@ -54,7 +54,7 @@ num_preds    = [1, 2, 3]
 n            = 50
 num_episodes = 10000
 algorithm    = "Q"
-algo_func = "independent_qlearning"
+algo_func    = "independent_qlearning"
 
 #Speficif experiments
 alphas	    = [0.1, 0.2, 0.3, 0.4, 0.5]
@@ -66,8 +66,8 @@ taus	    = [0.1, 0.5,1,5]
 
 #batch_settings = [(algorithm, algo_func, changevar, var_value, 1), (algorithm, algo_func, changevar, var_value, 2)]
 batch_settings = []
-batch_settings = batch_settings + [(algorithm, algo_func, 'alpha', 		  a, p) for a in alphas		 for p in num_preds]
-batch_settings = batch_settings + [(algorithm, algo_func, 'gamma', 		  g, p) for g in gammas 	 for p in num_preds]
+batch_settings = batch_settings + [(algorithm, algo_func, 'alpha', 		   a, p) for a in alphas		 for p in num_preds]
+batch_settings = batch_settings + [(algorithm, algo_func, 'gamma', 		   g, p) for g in gammas 	 for p in num_preds]
 batch_settings = batch_settings + [(algorithm, algo_func, 'initial_value', v, p) for v in init_values for p in num_preds]
 
 batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'epsilon_greedy({0})'.format(e), p) for e in epsilons for p in num_preds]
