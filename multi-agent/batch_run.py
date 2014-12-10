@@ -73,4 +73,8 @@ batch_settings = batch_settings + [(algorithm, algo_func, 'initial_value', v, p)
 batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'epsilon_greedy({0})'.format(e), p) for e in epsilons for p in num_preds]
 batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'softmax({0})'.format(t),	     p) for t in taus 	  for p in num_preds]
 
+
+#For edwin, the other way around
+batch_settings.reverse()
+
 batch_run(batch_settings,n,num_episodes)
