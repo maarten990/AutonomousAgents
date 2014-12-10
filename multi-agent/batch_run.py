@@ -24,8 +24,8 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 			print 'Running batch {0}/{1}'.format(i+1,len(batch_settings))
 
 			#create dummy files, so this calculations will be skipped by parralel scripts
-			open(filebase+ '.winners.csv', 'w').close()
-			open(filebase+ '.steps.csv', 'w').close()
+			#open(filebase+ '.winners.csv', 'w').close()
+			#open(filebase+ '.steps.csv', 'w').close()
 
 			# Make state
 			if num_pred == 1:
