@@ -52,7 +52,8 @@ def question1():
 def question2():
     #state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
     state = initialise_state([(10, 10), (10, 0)], (5, 5))
-    independent_qlearning(state, num_episodes=5000, plot_winner=True,plot_duration=True)
+    independent_qlearning(state, num_episodes=8000, plot_winner=False,plot_duration=True)
+
 
 
 def question3():

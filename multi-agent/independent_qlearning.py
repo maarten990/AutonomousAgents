@@ -91,23 +91,50 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
             state = newstate
 
         steps.append(num_steps)
+        # 1 means predator -1 means prey
         winners.append(1 if reward(state)[0] > 0 else -1)
 
+
+    episodes = range(len(winners))
+    #create tuples for prey and pred with the index of the episode on which they 
+    # won and the number of steps it took
+    prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==-1]
+    pred_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==1]
+
+    prey_episodes = [e for e,_ in prey_tup]
+    prey_steps = [-s for _,s in prey_tup]
+
+    pred_episodes = [e for e,_ in pred_tup]
+    pred_steps = [s for _,s in pred_tup]
+
     if plot_winner:
-        plt.scatter(range(len(winners)), winners)
+        plt.title('Funny game with {0} predators'.format(num_predators))
+
         plt.show()
     if plot_duration:
-        plt.hold(True)
-        plt.plot(range(len(steps)), steps)
+
+        #plt.title('Funny game with {0} predators'.format(num_predators))
+        #plt.plot(range(len(steps)), steps)
+        #plt.ylabel('Steps untill game ends (prey or predator wins)')
+        #plt.xlabel('Episodes')
+        #plt.show()
+
+        plt.title('Funny game with {0} predators'.format(num_predators))
+
+        #plot the steps/episodes line
+        plt.scatter(prey_episodes,prey_steps,color='red')
+        plt.scatter(pred_episodes,pred_steps,color='blue')
+        plt.ylabel('Steps untill game ends (prey or predator wins)')
+        plt.xlabel('Episodes')
         plt.show()
 
     #plot the plot for prey and other separately
-    prey_steps = [s for w,s in zip(winners,steps) if w ==1]
-    pred_steps = [s for w,s in zip(winners,steps) if w ==-1]
+    plt.title('Funny game with {0} predators'.format(num_predators))
     plt.plot(range(len(prey_steps)),prey_steps)
     plt.xlabel('Number of episodes where the prey wins')
     plt.ylabel('Steps untill prey wins')
     plt.show()
+    plt.title('Funny game with {0} predators'.format(num_predators))
     plt.plot(range(len(pred_steps)),pred_steps)
     plt.xlabel('Number of episodes where the predator wins')
     plt.ylabel('Steps untill predator wins')
