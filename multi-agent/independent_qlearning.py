@@ -122,23 +122,15 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
         plt.title('Funny game with {0} predators'.format(num_predators))
 
         #plot the steps/episodes line
-        plt.scatter(prey_episodes,prey_steps,color='red')
-        plt.scatter(pred_episodes,pred_steps,color='blue')
-        plt.ylabel('Steps untill game ends (prey or predator wins)')
+        plt.scatter(prey_episodes,prey_steps,color='red',s=1)
+        plt.scatter(pred_episodes,pred_steps,color='blue',s=1)
+        print plt.yticks()
+        plt.yticks(plt.yticks()[0], [abs(y) for y in plt.yticks()[0]] )
+        #plt.yticks([abs(y) for y in plt.yticks()])
+        #ax.set_yticklabels([str(abs(x)) for x in ax.get_yticks()])
+        plt.ylabel('Steps untill game ends')
         plt.xlabel('Episodes')
         plt.show()
-
-    #plot the plot for prey and other separately
-    plt.title('Funny game with {0} predators'.format(num_predators))
-    plt.plot(range(len(prey_steps)),prey_steps)
-    plt.xlabel('Number of episodes where the prey wins')
-    plt.ylabel('Steps untill prey wins')
-    plt.show()
-    plt.title('Funny game with {0} predators'.format(num_predators))
-    plt.plot(range(len(pred_steps)),pred_steps)
-    plt.xlabel('Number of episodes where the predator wins')
-    plt.ylabel('Steps untill predator wins')
-    plt.show()
 
     if return_steps:
         return steps
