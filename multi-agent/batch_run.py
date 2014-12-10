@@ -23,6 +23,10 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 		else:
 			print 'Running batch {0}/{1}'.format(i+1,len(batch_settings))
 
+			#create dummy files, so this calculations will be skipped by parralel scripts
+			open(filebase+ '.winners.csv', 'w').close()
+			open(filebase+ '.steps.csv', 'w').close()
+
 			# Make state
 			if num_pred == 1:
 				state = initialise_state([(10, 10)], (5, 5))
@@ -65,7 +69,7 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 
 
 #General settings
-num_preds    = [1, 2, 3]
+num_preds    = [3, 1, 2]
 n            = 50
 num_episodes = 10000
 algorithm    = "Q"
@@ -81,15 +85,32 @@ taus	    = [0.1, 0.5,1,5]
 
 #batch_settings = [(algorithm, algo_func, changevar, var_value, 1), (algorithm, algo_func, changevar, var_value, 2)]
 batch_settings = []
-batch_settings = batch_settings + [(algorithm, algo_func, 'alpha', 		   a, p) for a in alphas		 for p in num_preds]
-batch_settings = batch_settings + [(algorithm, algo_func, 'gamma', 		   g, p) for g in gammas 	 for p in num_preds]
-batch_settings = batch_settings + [(algorithm, algo_func, 'initial_value', v, p) for v in init_values for p in num_preds]
+batch_settings = batch_settings + [(algorithm, algo_func, 'alpha', 		   a, p) for p in num_preds for a in alphas ]
+batch_settings = batch_settings + [(algorithm, algo_func, 'gamma', 		   g, p) for p in num_preds for g in gammas ]
+batch_settings = batch_settings + [(algorithm, algo_func, 'initial_value', v, p) for p in num_preds for v in init_values ]
 
-batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'epsilon_greedy({0})'.format(e), p) for e in epsilons for p in num_preds]
-batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'softmax({0})'.format(t),	     p) for t in taus 	  for p in num_preds]
+batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'epsilon_greedy({0})'.format(e), p) for p in num_preds for e in epsilons ]
+batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'softmax({0})'.format(t),	     p) for p in num_preds for t in taus ]
 
+
+## BEGIN FIX FOR TERRIBLY SLOWNESS
+def sort_pred(line):
+	# make sure numpred==1 is inside (will be tested last)
+	num_pred = line[4]
+
+	if num_pred == 2:
+		return 1
+	elif num_pred ==1:
+		return 2
+	elif num_pred ==3:
+		return 3
+batch_settings.sort(key=sort_pred)
+## END FIX
 
 #For edwin, the other way around
 batch_settings.reverse()
+
+for n, line in enumerate(batch_settings):
+	print n, line
 
 batch_run(batch_settings,n,num_episodes)

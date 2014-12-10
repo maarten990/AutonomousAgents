@@ -21,34 +21,7 @@ class RandomPolicy:
     def __call__(self, state):
         return choice(self.actions)
 
-def plot_winner_scatter(steps,winners):
-    """
-    Plots an awesome scatterplot!
-    Two lists of length of total episodes:
-        winners: keeping track of who won (1 = pred, 0=prey)
-        steps: numer of steps to end game
-    """
 
-    episodes = range(len(winners))
-    #create tuples for prey and pred with the index of the episode on which they 
-    # won and the number of steps it took
-    prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==0]
-    pred_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==1]
-
-    prey_episodes = [e for e,_ in prey_tup]
-    prey_steps = [-s for _,s in prey_tup]
-
-    pred_episodes = [e for e,_ in pred_tup]
-    pred_steps = [s for _,s in pred_tup]
-
-    #plot the steps/episodes line
-    plt.scatter(prey_episodes,prey_steps,color='red',s=1)
-    plt.scatter(pred_episodes,pred_steps,color='blue',s=1)
-    plt.grid()
-    plt.yticks(plt.yticks()[0], [abs(y) for y in plt.yticks()[0]] )
-    plt.ylabel('< Steps untill prey wins                  Steps untill predator wins >')
-    plt.xlabel('Episodes')
-    plt.xlim([0, len(episodes)])
 
 
 def question1():
