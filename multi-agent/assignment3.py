@@ -20,7 +20,7 @@ class RandomPolicy:
     def __call__(self, state):
         return choice(self.actions)
 
-def plot_winner_scatter(winners,steps):
+def plot_winner_scatter(steps,winners):
     """
     Plots an awesome scatterplot!
     Two lists of length of total episodes:
@@ -39,17 +39,15 @@ def plot_winner_scatter(winners,steps):
 
     pred_episodes = [e for e,_ in pred_tup]
     pred_steps = [s for _,s in pred_tup]
-    plt.title('Funny game with {0} predators'.format(num_predators))
 
     #plot the steps/episodes line
     plt.scatter(prey_episodes,prey_steps,color='red',s=1)
     plt.scatter(pred_episodes,pred_steps,color='blue',s=1)
     plt.grid()
     plt.yticks(plt.yticks()[0], [abs(y) for y in plt.yticks()[0]] )
-    plt.ylabel('< Steps untill prey winds                  Steps untill predator wins>')
+    plt.ylabel('< Steps untill prey wins                  Steps untill predator wins >')
     plt.xlabel('Episodes')
     plt.xlim([0, len(episodes)])
-    plt.show()
 
 
 def question1():
@@ -68,7 +66,9 @@ def question1():
 def question2():
     #state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
     state = initialise_state([(10, 10), (10, 0)], (5, 5))
-    independent_qlearning(state, num_episodes=10000, plot_winner=False,plot_duration=True)
+    plot_winner_scatter(*independent_qlearning(state, num_episodes=10000, return_steps=True))
+    plt.title('Funny game with 2 predators')
+    plt.show()
 
 
 
