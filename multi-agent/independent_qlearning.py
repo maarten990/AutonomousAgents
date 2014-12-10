@@ -35,8 +35,7 @@ def softmax(temp):
     return f
 
 def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
-        gamma=0.5, selection_func=epsilon_greedy(0.1), plot_winner=False,
-        plot_duration=False, return_steps=False):
+        gamma=0.5, selection_func=epsilon_greedy(0.1), return_steps=True):
     """
     Estimate an action-value function Q using the Q-learning algorithm.
     begin_state: initial state of each episode

@@ -67,9 +67,9 @@ def question1():
 def question2():
     #state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
     state = initialise_state([(10, 10), (10, 0)], (5, 5))
-    #plot_winner_scatter(*independent_qlearning(state, num_episodes=10000, return_steps=True))
-    #plt.title('Funny game with 2 predators')
-    #plt.show()
+    plot_winner_scatter(*independent_qlearning(state, num_episodes=10000, return_steps=True))
+    plt.title('Funny game with 2 predators')
+    plt.show()
 
     #Take averages
     n=50
@@ -87,12 +87,12 @@ def question2():
     fig, ax1 = plt.subplots()
     ax1.plot(steps)
     ax1.set_ylabel('Number of steps untill game ends')
-    ax1.set_xlabel('# of features')
+    ax1.set_xlabel('Episode')
     ax1.yaxis.grid()
     ax1.xaxis.grid()
     ax2 = ax1.twinx()
     ax2.plot(winners,'r')
-    ax2.set_ylabel('Number of times the predators won (Rrrrrrrr.. ed)')
+    ax2.set_ylabel('Proportion of games won by the predators')
     plt.show()
     #np.array()
 
