@@ -21,7 +21,7 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 		if os.path.isfile(filebase+ '.winners.csv') and  os.path.isfile(filebase+ '.steps.csv'):
 			print 'Experiment allready contucted, skiping . . .'
 		else:
-			print 'Running batch {0}/{1}'.format(i+1,len(batch_settings))
+			print 'Running batch {0}/{1}'.format(i,len(batch_settings))
 
 			#create dummy files, so this calculations will be skipped by parralel scripts
 			#open(filebase+ '.winners.csv', 'w').close()
