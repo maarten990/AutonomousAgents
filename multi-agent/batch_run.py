@@ -3,6 +3,7 @@ from independent_qlearning import *
 from random import choice
 import numpy as np
 import os.path
+import time
 
 def batch_run(batch_settings,n=50,num_episodes=10000):
 
@@ -38,8 +39,22 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 
 			# Run all the trials 
 			for _ in range(n):
+
+				t0 = time.time()
+
 				# DO IT BABY
 				s, w = eval(algo_func + "(state, num_episodes={0}, {1}={2})".format(num_episodes,changevar,var_value))
+
+				duurtlang = time.time() - t0
+
+				if duurtlang < 60:
+					print "{0}sec elapsed".format(duurtlang)
+				elif duurtlang < 60*60:
+					print "{0}min elapsed".format(duurtlang/60)
+				elif duurtlang < 60*60*24:
+					print "{0}h elapsed".format(duurtlang/60/60)
+				else:
+					print "fucking lang elapsed"
 
 				winners_mat.append(w)
 				steps_mat.append(s)
