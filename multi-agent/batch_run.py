@@ -51,7 +51,7 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 
 #General settings
 num_preds    = [1, 2, 3]
-n            = 75
+n            = 50
 num_episodes = 10000
 algorithm    = "Q"
 algo_func = "independent_qlearning"
