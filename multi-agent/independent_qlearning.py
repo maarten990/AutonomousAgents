@@ -66,7 +66,7 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
         while not terminal(state):
             num_steps += 1
 
-            # update environment
+            # update environmen1
             # all decisions are taken at the same time (so based on the old
             # state)
             pred_actions = []
@@ -99,8 +99,19 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
     if plot_duration:
         plt.hold(True)
         plt.plot(range(len(steps)), steps)
-        plt.ylim((0, 100))
         plt.show()
+
+    #plot the plot for prey and other separately
+    prey_steps = [s for w,s in zip(winners,steps) if w ==1]
+    pred_steps = [s for w,s in zip(winners,steps) if w ==-1]
+    plt.plot(range(len(prey_steps)),prey_steps)
+    plt.xlabel('Number of episodes where the prey wins')
+    plt.ylabel('Steps untill prey wins')
+    plt.show()
+    plt.plot(range(len(pred_steps)),pred_steps)
+    plt.xlabel('Number of episodes where the predator wins')
+    plt.ylabel('Steps untill predator wins')
+    plt.show()
 
     if return_steps:
         return steps
