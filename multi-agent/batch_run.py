@@ -69,7 +69,7 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 
 
 #General settings
-num_preds    = [3, 1, 2]
+num_preds    = [2]
 n            = 50
 num_episodes = 10000
 algorithm    = "Q"
@@ -92,20 +92,6 @@ batch_settings = batch_settings + [(algorithm, algo_func, 'initial_value', v, p)
 batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'epsilon_greedy({0})'.format(e), p) for p in num_preds for e in epsilons ]
 batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'softmax({0})'.format(t),	     p) for p in num_preds for t in taus ]
 
-
-## BEGIN FIX FOR TERRIBLY SLOWNESS
-def sort_pred(line):
-	# make sure numpred==1 is inside (will be tested last)
-	num_pred = line[4]
-
-	if num_pred == 2:
-		return 1
-	elif num_pred ==1:
-		return 2
-	elif num_pred ==3:
-		return 3
-batch_settings.sort(key=sort_pred)
-## END FIX
 
 #For edwin, the other way around
 batch_settings.reverse()
