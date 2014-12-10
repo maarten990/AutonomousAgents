@@ -90,7 +90,7 @@ batch_settings = batch_settings + [(algorithm, algo_func, 'gamma', 		   g, p) fo
 batch_settings = batch_settings + [(algorithm, algo_func, 'initial_value', v, p) for p in num_preds for v in init_values ]
 
 batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'epsilon_greedy({0})'.format(e), p) for p in num_preds for e in epsilons ]
-batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'softmax({0})'.format(t),	     p) for p in num_preds for t in taus ]
+#batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'softmax({0})'.format(t),	     p) for p in num_preds for t in taus ]
 
 
 #For edwin, the other way around
