@@ -21,7 +21,7 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 		if os.path.isfile(filebase+ '.winners.csv') and  os.path.isfile(filebase+ '.steps.csv'):
 			print 'Experiment allready contucted, skiping . . .'
 		else:
-			print 'Running batch {0}/{1}'.format(i,len(batch_settings))
+			print 'Running batch {0}/{1}'.format(i+1,len(batch_settings))
 
 			# Make state
 			if num_pred == 1:
@@ -48,11 +48,11 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 				duurtlang = time.time() - t0
 
 				if duurtlang < 60:
-					print "{0}sec elapsed".format(duurtlang)
+					print "{0:.2f}sec elapsed".format(duurtlang)
 				elif duurtlang < 60*60:
-					print "{0}min elapsed".format(duurtlang/60)
+					print "{0:.2f}min elapsed".format(duurtlang/60)
 				elif duurtlang < 60*60*24:
-					print "{0}h elapsed".format(duurtlang/60/60)
+					print "{0:.2f}h elapsed".format(duurtlang/60/60)
 				else:
 					print "fucking lang elapsed"
 
