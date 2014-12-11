@@ -35,8 +35,7 @@ def softmax(temp):
     return f
 
 def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
-        gamma=0.5, selection_func=epsilon_greedy(0.1), plot_winner=False,
-        plot_duration=False, return_steps=False):
+        gamma=0.5, selection_func=epsilon_greedy(0.1), return_steps=True):
     """
     Estimate an action-value function Q using the Q-learning algorithm.
     begin_state: initial state of each episode
@@ -66,7 +65,7 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
         while not terminal(state):
             num_steps += 1
 
-            # update environment
+            # update environmen1
             # all decisions are taken at the same time (so based on the old
             # state)
             pred_actions = []
@@ -91,19 +90,12 @@ def independent_qlearning(begin_state, initial_value=15, num_episodes=1000, alph
             state = newstate
 
         steps.append(num_steps)
-        winners.append(1 if reward(state)[0] > 0 else -1)
+        # 1 means predator 0 means prey
+        winners.append(1 if reward(state)[0] > 0 else 0)
 
-    if plot_winner:
-        plt.scatter(range(len(winners)), winners)
-        plt.show()
-    if plot_duration:
-        plt.hold(True)
-        plt.plot(range(len(steps)), steps)
-        plt.ylim((0, 100))
-        plt.show()
 
     if return_steps:
-        return steps
+        return steps, winners
     else:
         return Q
 

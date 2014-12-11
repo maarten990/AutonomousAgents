@@ -4,6 +4,7 @@
 from environment import *
 from independent_qlearning import *
 from random import choice
+import numpy as np
 
 class RandomPredatorPolicy:
     def __init__(self, actions, num_predators):
@@ -20,21 +21,8 @@ class RandomPolicy:
     def __call__(self, state):
         return choice(self.actions)
 
-def testion1():
-    pred_policy = RandomPredatorPolicy(possible_actions, 3)
-    prey_policy = RandomPolicy(possible_actions)
 
-    state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
 
-    runs=0
-    while not prey_died_horribly(state):
-        state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
-        while not terminal(state):
-            state = step(state, pred_policy, prey_policy)
-            print_state(state)
-        runs +=1
-
-    print "Reward: {0}, \nRuns:{1}".format(reward(state),runs)
 
 def question1():
     pred_policy = RandomPredatorPolicy(possible_actions, 3)
@@ -52,7 +40,36 @@ def question1():
 def question2():
     #state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))
     state = initialise_state([(10, 10), (10, 0)], (5, 5))
-    independent_qlearning(state, num_episodes=5000, plot_winner=True)
+    plot_winner_scatter(*independent_qlearning(state, num_episodes=10000, return_steps=True))
+    plt.title('Funny game with 2 predators')
+    plt.show()
+
+    #Take averages
+    n=50
+    winners_mat = [];
+    steps_mat = [];
+    for i in range(n):
+        s,w = independent_qlearning(state, num_episodes=5000, return_steps=True)
+
+        winners_mat.append(w)
+        steps_mat.append(s)
+
+    steps  =  np.average(steps_mat,axis=0)
+    winners = np.average(winners_mat,axis=0)
+
+    fig, ax1 = plt.subplots()
+    ax1.plot(steps)
+    ax1.set_ylabel('Number of steps untill game ends')
+    ax1.set_xlabel('Episode')
+    ax1.yaxis.grid()
+    ax1.xaxis.grid()
+    ax2 = ax1.twinx()
+    ax2.plot(winners,'r')
+    ax2.set_ylabel('Proportion of games won by the predators')
+    plt.show()
+    #np.array()
+
+
 
 
 def question3():
