@@ -2,18 +2,29 @@ import numpy as np
 import os.path
 import matplotlib.pyplot as plt
 
-algorithm="Q"
-num_pred =2
-changevar="alpha"
-var_value=0.1
-
-filebase = "data/{0}.p={1},{2}={3}".format(algorithm,num_pred,changevar,var_value)
-
 def main():
 
 	single_setting_line_plot(var_value=0.2)
+	var_effect_line_plot()
+
+	var_effect_line_plot(changevar='alphas',var_values=[0.1, 0.2, 0.3, 0.4, 0.5])
+	var_effect_line_plot(changevar='alphas',var_values=[0.1, 0.2, 0.3, 0.4, 0.5],plotWinners=True)
+
+	var_effect_line_plot(changevar='gammas',var_values=[0.1, 0.5, 0.7, 0.9])
+	var_effect_line_plot(changevar='gammas',var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
+
+	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50])
+	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+
+	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50])
+	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+
+	var_effect_line_plot(changevar='selection_func',greekVar=False,var_values=['epsilon_greedy({0})'.format(e) for e in  [0,0.1,0.5,0.9]])
+	var_effect_line_plot(changevar='selection_func',greekVar=False,var_values=['epsilon_greedy({0})'.format(e) for e in  [0,0.1,0.5,0.9]],plotWinners=True)
+	
+
+
 	var_effect_line_plot()		
-	var_effect_line_plot(plotWinners=True)		
 
 def load_results(algorithm,num_pred,changevar,var_value):
 	"""
@@ -41,8 +52,6 @@ def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_val
 
 	winners_mat, steps_mat = load_results(algorithm,num_pred,changevar,var_value)
 
-	print winners_mat
-
 	if winners_mat.any():
 
 		steps  =  np.average(steps_mat,axis=0)
@@ -63,7 +72,7 @@ def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_val
 			tl.set_color('r')
 		plt.show()
 
-def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=[0.1, 0.2],plotWinners=False,greekVar=True):
+def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=[0.1, 0.2, 0.3, 0.4],plotWinners=False,greekVar=True):
 	"""
 	Plots the episode on the x axis
 	On the y axis: Steps if plotWinners = False, else proportion won by preds

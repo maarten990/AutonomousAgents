@@ -94,7 +94,7 @@ batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'eps
 
 
 #For edwin, the other way around
-batch_settings.reverse()
+#batch_settings.reverse()
 
 for n, line in enumerate(batch_settings):
 	print n, line
