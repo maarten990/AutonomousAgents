@@ -5,7 +5,7 @@ from numpy import min, max, argmax
 from independent_qlearning import *
 from pulp import * 
 
-def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=False):
+def minimax_q(initial_state, gamma=0.5, explore=0.1,num_episodes=50,verbose=False):
 	if len(initial_state) > 1:
 		print 'Error: minimax_q only works for a single predator'
 		return
@@ -49,8 +49,8 @@ def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=Fals
 					prey_actions])
 
 			# learn
-			pred_reward, _ = reward(state)
 			newstate = step(state, [a], o)
+			pred_reward, _ = reward(newstate)
 
 			Q[(state, a, o)] = (1 - alpha) * Q[(state, a, o)] + alpha * (pred_reward + gamma
 					* V[newstate])
@@ -65,7 +65,7 @@ def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=Fals
 			p5 = LpVariable("p5", 0, 1)
 			a1, a2, a3, a4, a5 = pred_actions
 
-			prob = LpProblem("myProblem", LpMaximize)
+			prob = LpProblem("minimaxQ", LpMaximize)
 
 			#constraints
 			prob += p1 + p2 + p3 + p4 + p5 == 1 
@@ -77,6 +77,7 @@ def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=Fals
 			status = prob.solve(GLPK(msg = 0))
 			
 			V[state] = value(V_new)
+			print value(p1),value(p2),value(p3),value(p4),value(p5)
 			pi_pred[(state, a1)] = value(p1)
 			pi_pred[(state, a2)] = value(p2)
 			pi_pred[(state, a3)] = value(p3)
@@ -88,7 +89,8 @@ def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=Fals
 
 		steps.append(num_steps)
 
-		if verbose: print [ pi_pred[(state,a)] for a in pred_actions]	
+		if verbose: print [ pi_pred[(state,a)] for a in pred_actions]
+		if verbose: print [ pi_pred[(newstate,a)] for a in pred_actions]	
 
 	return steps
 

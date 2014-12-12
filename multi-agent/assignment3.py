@@ -75,7 +75,8 @@ def question2():
 
 def question3():
     state = initialise_state([(10, 10)], (5, 5))
-    plot_winner_scatter(*minimax_q(state))
+    steps  = minimax_q(state,num_episodes=1000,verbose=True)
+    np.savetxt('minimaxicosiqute',steps)
     
 
 
