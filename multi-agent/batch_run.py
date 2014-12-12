@@ -72,7 +72,7 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 
 #General settings
 num_preds    = [1, 2, 3, 4]
-num_trials   = 50
+num_trials   = 25
 num_episodes = 10000
 algorithm    = "Q"
 algo_func    = "independent_qlearning"
@@ -80,7 +80,7 @@ algo_func    = "independent_qlearning"
 
 #Lang code whaaat: 
 ###########################################################################################
-batch_settings = [('Q',"independent_qlearning",'alpha',0.5,p) for p in num_preds]
+batch_settings = [('Q',"independent_qlearning",'gamma',g,2) for g in [0.7, 0.9]]]
 for n, line in enumerate(batch_settings):
 	print n, line
 batch_run(batch_settings,num_trials,num_episodes)

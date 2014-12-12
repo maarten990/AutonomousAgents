@@ -55,8 +55,8 @@ def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=Fals
 			Q[(state, a, o)] = (1 - alpha) * Q[(state, a, o)] + alpha * (pred_reward + gamma
 					* V[newstate])
 
-			#### LINEAR PROGRAMMING GOES HERE
-			####
+			######################################## LINEAR PROGRAMMING  #############################################
+
 			V_new  = LpVariable("V")
 			p1 = LpVariable("p1", 0, 1)
 			p2 = LpVariable("p2", 0, 1)
