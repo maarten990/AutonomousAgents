@@ -49,8 +49,8 @@ def minimax_q(initial_state, gamma=0.5, explore=0.1,num_episodes=50,verbose=Fals
 					prey_actions])
 
 			# learn
-			pred_reward, _ = reward(state)
 			newstate = step(state, [a], o)
+			pred_reward, _ = reward(newstate)
 
 			Q[(state, a, o)] = (1 - alpha) * Q[(state, a, o)] + alpha * (pred_reward + gamma
 					* V[newstate])
@@ -88,7 +88,8 @@ def minimax_q(initial_state, gamma=0.5, explore=0.1,num_episodes=50,verbose=Fals
 
 		steps.append(num_steps)
 
-		if verbose: print [ pi_pred[(state,a)] for a in pred_actions]	
+		if verbose: print [ pi_pred[(state,a)] for a in pred_actions]
+		if verbose: print [ pi_pred[(newstate,a)] for a in pred_actions]	
 
 	return steps
 
