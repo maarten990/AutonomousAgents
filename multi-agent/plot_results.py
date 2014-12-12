@@ -7,7 +7,7 @@ def main():
 	s,w = load_results("Q",2,"alpha",0.5,)
 	plot_winner_scatter(s[0],w[0],title='Single run of Q learning with 2 predators')
 
-	single_setting_line_plot()
+	single_setting_line_plot(title='Single run of Q learning with 2 predators')
 
 	num_preds_plot()
 	num_preds_plot(plotWinners = True)
@@ -23,7 +23,6 @@ def main():
 
 	var_effect_line_plot(title='Independent Q learning with 2 predators',changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50])
 	var_effect_line_plot(title='Independent Q learning with 2 predators',schangevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
-
 
 def load_results(algorithm,num_pred,changevar,var_value):
 	"""
@@ -43,7 +42,7 @@ def load_results(algorithm,num_pred,changevar,var_value):
 		return np.array(False), np.array(False)
 
 
-def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_value=0.5):
+def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_value=0.5,title=[]):
 	"""
 	Plot episodes on x axis, steps on y axis and winners on y axis if num_preds > 1
 	for a single algorithm/settings
@@ -69,6 +68,7 @@ def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_val
 		ax2.set_ylabel('Proportion of games won by the predators',color='purple')
 		for tl in ax2.get_yticklabels():
 			tl.set_color('purple')
+		if title: plt.title(title)			
 		plt.show()
 
 def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=[0.1, 0.2, 0.3, 0.4],plotWinners=False,greekVar=True,title=[]):
