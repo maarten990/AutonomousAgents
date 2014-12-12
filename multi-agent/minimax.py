@@ -62,13 +62,10 @@ def minimax(begin_state, initial_value=15, num_episodes=1000, alpha=0.5,
 
     #constraints
     prob += P1 + p2 + p3 + p4 + p5 = 1
-    prob += Q(s,a1,o1)*p1 + Q(s,a2,o1)*p2 + Q(s,a3,o1)*p3 + Q(s,a4,o1)*p4 + Q(s,a5,o1)*p5 -v >= 0
-    prob += Q(s,a1,o2)*p1 + Q(s,a2,o2)*p2 + Q(s,a3,o2)*p3 + Q(s,a4,o2)*p4 + Q(s,a5,o2)*p5 -v >= 0
-    prob += Q(s,a1,o3)*p1 + Q(s,a2,o3)*p2 + Q(s,a3,o3)*p3 + Q(s,a4,o3)*p4 + Q(s,a5,o3)*p5 -v >= 0
-    prob += Q(s,a1,o4)*p1 + Q(s,a2,o4)*p2 + Q(s,a3,o4)*p3 + Q(s,a4,o4)*p4 + Q(s,a5,o4)*p5 -v >= 0
-    .
-    prob += Q(s,a1,o1)*p1 + Q(s,a2,o1)*p2 + Q(s,a3,o1)*p3 + Q(s,a4,o1)*p4 + Q(s,a5,o1)*p5 -v >= 0
 
+    for o = 1:5:
+        prob += Q(s,a1,o)*p1 + Q(s,a2,o)*p2 + Q(s,a3,o)*p3 + Q(s,a4,o)*p4 + Q(s,a5,o)*p5 -v >= 0
+    
     #objective function
     status = prob.solve(GLPK(msg = 0))
     LpStatus[status]
