@@ -4,7 +4,11 @@ import matplotlib.pyplot as plt
 
 def main():
 
-	#single_setting_line_plot(var_value=0.2)
+	s,w = load_results("Q",2,"alpha",0.5,)
+	plot_winner_scatter(s[0],w[0],title='Single run of Q learning with 2 predators')
+
+	single_setting_line_plot()
+
 	num_preds_plot()
 	num_preds_plot(plotWinners = True)
 
@@ -21,10 +25,6 @@ def main():
 	var_effect_line_plot(title='Independent Q learning with 2 predators',schangevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
 
 
-
-
-	var_effect_line_plot()		
-
 def load_results(algorithm,num_pred,changevar,var_value):
 	"""
 	returns winners_mat and steps_mat for given settings
@@ -37,20 +37,19 @@ def load_results(algorithm,num_pred,changevar,var_value):
 		winners_mat = np.genfromtxt(filebase+ '.winners.csv',skiprows=0)
 		steps_mat = np.genfromtxt(filebase+ '.steps.csv',skiprows=0)
 
-		return winners_mat, steps_mat
+		return steps_mat, winners_mat
 	else:
 		print 'No such file:' + filebase
 		return np.array(False), np.array(False)
 
 
-
-def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_value=0.1):
+def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_value=0.5):
 	"""
 	Plot episodes on x axis, steps on y axis and winners on y axis if num_preds > 1
 	for a single algorithm/settings
 	"""
 
-	winners_mat, steps_mat = load_results(algorithm,num_pred,changevar,var_value)
+	steps_mat, winners_mat = load_results(algorithm,num_pred,changevar,var_value)
 
 	if winners_mat.any():
 
@@ -58,18 +57,18 @@ def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_val
 		winners = np.average(winners_mat,axis=0)
 
 		fig, ax1 = plt.subplots()
-		ax1.plot(steps,'b')
+		ax1.plot(steps,'g')
 		ax1.set_xlabel('Episode')
-		ax1.set_ylabel('Number of steps untill game ends',color='b')
+		ax1.set_ylabel('Number of steps untill game ends',color='g')
 		for tl in ax1.get_yticklabels():
-			tl.set_color('b')
+			tl.set_color('g')
 		ax1.yaxis.grid()
 		ax1.xaxis.grid()
 		ax2 = ax1.twinx()
-		ax2.plot(winners,'r')
-		ax2.set_ylabel('Proportion of games won by the predators',color='r')
+		ax2.plot(winners,'purple')
+		ax2.set_ylabel('Proportion of games won by the predators',color='purple')
 		for tl in ax2.get_yticklabels():
-			tl.set_color('r')
+			tl.set_color('purple')
 		plt.show()
 
 def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=[0.1, 0.2, 0.3, 0.4],plotWinners=False,greekVar=True,title=[]):
@@ -84,7 +83,7 @@ def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=
 
 	for var_value in var_values:
 
-		winners_mat, steps_mat = load_results(algorithm,num_pred,changevar,var_value)
+		steps_mat, winners_mat = load_results(algorithm,num_pred,changevar,var_value)
 
 		if plotWinners:
 			mat = winners_mat
@@ -121,7 +120,7 @@ def num_preds_plot(algorithm="Q",num_preds=[1,2,3,4],plotWinners=False):
 
 	for num_pred in num_preds:
 
-		winners_mat, steps_mat = load_results(algorithm,num_pred,'alpha',0.5)
+		steps_mat, winners_mat = load_results(algorithm,num_pred,'alpha',0.5)
 
 		if plotWinners:
 			mat = winners_mat
@@ -145,35 +144,39 @@ def num_preds_plot(algorithm="Q",num_preds=[1,2,3,4],plotWinners=False):
 
 
 
-def plot_winner_scatter(steps,winners):
-    """
-    Plots an awesome scatterplot!
-    Two lists of length of total episodes:
-        winners: keeping track of who won (1 = pred, 0=prey)
-        steps: numer of steps to end game
-    """
+def plot_winner_scatter(steps,winners,title=[]):
+	"""
+	Plots an awesome scatterplot!
+	Two lists of length of total episodes:
+		winners: keeping track of who won (1 = pred, 0=prey)
+		steps: numer of steps to end game
+	"""
 
-    episodes = range(len(winners))
-    #create tuples for prey and pred with the index of the episode on which they 
-    # won and the number of steps it took
-    prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==0]
-    pred_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==1]
+	episodes = range(len(winners))
+	#create tuples for prey and pred with the index of the episode on which they 
+	# won and the number of steps it took
+	prey_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==0]
+	pred_tup = [(e,s) for w,s,e in zip(winners,steps,episodes) if w ==1]
 
-    prey_episodes = [e for e,_ in prey_tup]
-    prey_steps = [-s for _,s in prey_tup]
+	prey_episodes = [e for e,_ in prey_tup]
+	prey_steps = [-s for _,s in prey_tup]
 
-    pred_episodes = [e for e,_ in pred_tup]
-    pred_steps = [s for _,s in pred_tup]
+	pred_episodes = [e for e,_ in pred_tup]
+	pred_steps = [s for _,s in pred_tup]
 
-    #plot the steps/episodes line
-    plt.scatter(prey_episodes,prey_steps,color='red',s=1)
-    plt.scatter(pred_episodes,pred_steps,color='blue',s=1)
-    plt.grid()
-    plt.yticks(plt.yticks()[0], [abs(y) for y in plt.yticks()[0]] )
-    plt.ylabel('< Steps untill prey wins                  Steps untill predator wins >')
-    plt.xlabel('Episodes')
-    plt.xlim([0, len(episodes)])
+	#plot the steps/episodes line
+	plt.scatter(prey_episodes,prey_steps,color='red',s=1)
+	plt.scatter(pred_episodes,pred_steps,color='blue',s=1)
+	plt.grid()
+	plt.yticks(plt.yticks()[0], [abs(y) for y in plt.yticks()[0]] )
+	plt.ylabel('< Steps untill prey wins                  Steps untill predator wins >')
+	plt.xlabel('Episodes')
+	plt.xlim([0, len(episodes)])
+
+	if title: plt.title(title)
+	plt.show()
+
 
 
 if __name__ == '__main__':
-    	main()
+		main()
