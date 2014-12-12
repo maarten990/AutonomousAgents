@@ -22,7 +22,7 @@ def main():
 	var_effect_line_plot(title='Independent Q learning with 2 predators',changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
 
 	var_effect_line_plot(title='Independent Q learning with 2 predators',changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50])
-	var_effect_line_plot(title='Independent Q learning with 2 predators',changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+	var_effect_line_plot(title='Independent Q learning with 2 predators',schangevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
 
 def load_results(algorithm,num_pred,changevar,var_value):
 	"""
