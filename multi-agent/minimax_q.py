@@ -77,6 +77,7 @@ def minimax_q(initial_state, gamma=0.5, explore=0.1,num_episodes=50,verbose=Fals
 			status = prob.solve(GLPK(msg = 0))
 			
 			V[state] = value(V_new)
+			print value(p1),value(p2),value(p3),value(p4),value(p5)
 			pi_pred[(state, a1)] = value(p1)
 			pi_pred[(state, a2)] = value(p2)
 			pi_pred[(state, a3)] = value(p3)
