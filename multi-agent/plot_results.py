@@ -6,17 +6,17 @@ def main():
 
 	#single_setting_line_plot(var_value=0.2)
 
-	var_effect_line_plot(changevar='alpha',greekVar=True,var_values=[0.1, 0.2, 0.3, 0.4, 0.5])
-	var_effect_line_plot(changevar='alpha',greekVar=True,var_values=[0.1, 0.2, 0.3, 0.4, 0.5],plotWinners=True)
+	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='alpha',var_values=[0.1, 0.2, 0.3, 0.4, 0.5])
+	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='alpha',var_values=[0.1, 0.2, 0.3, 0.4, 0.5],plotWinners=True)
 
-	var_effect_line_plot(changevar='epsilon',greekVar=True,var_values=[0,0.1,0.5,0.9])
-	var_effect_line_plot(changevar='epsilon',greekVar=True,var_values=[0,0.1,0.5,0.9],plotWinners=True)	
+	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='epsilon',var_values=[0,0.1,0.5,0.9])
+	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='epsilon',var_values=[0,0.1,0.5,0.9],plotWinners=True)	
 
-	var_effect_line_plot(changevar='gamma',greekVar=True,var_values=[0.1, 0.5, 0.7, 0.9])
-	var_effect_line_plot(changevar='gamma',greekVar=True,var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
+	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9])
+	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
 
-	var_effect_line_plot(changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50])
-	var_effect_line_plot(changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50])
+	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
 
 
 
@@ -72,7 +72,7 @@ def single_setting_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_val
 			tl.set_color('r')
 		plt.show()
 
-def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=[0.1, 0.2, 0.3, 0.4],plotWinners=False,greekVar=True):
+def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=[0.1, 0.2, 0.3, 0.4],plotWinners=False,greekVar=True,title=[]):
 	"""
 	Plots the episode on the x axis
 	On the y axis: Steps if plotWinners = False, else proportion won by preds
@@ -104,6 +104,7 @@ def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=
 				plt.plot(xs, yvar, label='${0}: {1}$'.format(changevar.replace('_',' '), var_value))
 
 
+	if title: plt.title(title)
 	plt.legend()
 	plt.xlabel('Episode')
 	plt.show()
