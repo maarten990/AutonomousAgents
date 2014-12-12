@@ -7,16 +7,16 @@ def main():
 	#single_setting_line_plot(var_value=0.2)
 
 	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='alpha',var_values=[0.1, 0.2, 0.3, 0.4, 0.5])
-	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='alpha',var_values=[0.1, 0.2, 0.3, 0.4, 0.5],plotWinners=True)
+	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='alpha',var_values=[0.1, 0.2, 0.3, 0.4, 0.5],plotWinners=True)
 
-	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='epsilon',var_values=[0,0.1,0.5,0.9])
-	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='epsilon',var_values=[0,0.1,0.5,0.9],plotWinners=True)	
+	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='epsilon',var_values=[0,0.1,0.5,0.9])
+	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='epsilon',var_values=[0,0.1,0.5,0.9],plotWinners=True)	
 
-	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9])
-	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
+	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9])
+	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
 
-	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50])
-	var_effect_line_plot(title='Independen Q learning with 2 predators'changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+	var_effect_line_plot(title='Independen Q learning with 2 predators',changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50])
+	var_effect_line_plot(title='Independen Q learning with 2 predators',schangevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
 
 
 
