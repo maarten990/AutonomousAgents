@@ -46,7 +46,7 @@ def minimax_q_step(initial_state, gamma=1.0, decay=1.0, explore=epsilon_greedy(0
 
         #### LINEAR PROGRAMMING GOES HERE
         ####
-        V  = LpVariable("V",-100000000,1000000000)
+        V_new  = LpVariable("V",-100000000,1000000000)
         p1 = LpVariable("p1", 0, 1)
         p2 = LpVariable("p2", 0, 1)
         p3 = LpVariable("p3", 0, 1)
@@ -59,12 +59,12 @@ def minimax_q_step(initial_state, gamma=1.0, decay=1.0, explore=epsilon_greedy(0
         prob += P1 + p2 + p3 + p4 + p5 = 1
 
         for o = 1:5:
-            prob += Q(s,a1,o)*p1 + Q(s,a2,o)*p2 + Q(s,a3,o)*p3 + Q(s,a4,o)*p4 + Q(s,a5,o)*p5 -v >= 0
+            prob += Q(s,a1,o)*p1 + Q(s,a2,o)*p2 + Q(s,a3,o)*p3 + Q(s,a4,o)*p4 + Q(s,a5,o)*p5 -V_new >= 0
     
         #objective function
         status = prob.solve(GLPK(msg = 0))
         LpStatus[status]
-        v_max = value(v)
+        C[state] = value(V_new)
 
         # update state
         state = newstate
