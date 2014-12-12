@@ -80,7 +80,7 @@ algo_func    = "independent_qlearning"
 
 #Lang code whaaat: 
 ###########################################################################################
-batch_settings = [('Q',"independent_qlearning",'gamma',g,2) for g in [0.7, 0.9]]]
+batch_settings = [('Q',"independent_qlearning",'gamma',g,2) for g in [0.7, 0.9]]
 for n, line in enumerate(batch_settings):
 	print n, line
 batch_run(batch_settings,num_trials,num_episodes)
