@@ -34,6 +34,8 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 				state = initialise_state([(10, 10), (10, 0)], (5, 5))
 			elif num_pred ==3:
 				state = initialise_state([(10, 10), (10, 0), (0, 10)], (5, 5))	
+			elif num_pred ==4:
+				state = initialise_state([(10, 10), (10, 0), (0, 10),(0, 0)], (5, 5))	
 			else:
 				print 'ERROOROROREOROEROEROERORREORO'
 
@@ -69,11 +71,21 @@ def batch_run(batch_settings,n=50,num_episodes=10000):
 
 
 #General settings
-num_preds    = [2]
-n            = 50
+num_preds    = [1, 2, 3, 4]
+num_trials   = 50
 num_episodes = 10000
 algorithm    = "Q"
 algo_func    = "independent_qlearning"
+
+
+#Lang code whaaat: 
+###########################################################################################
+batch_settings = [('Q',"independent_qlearning",'alpha',0.5,p) for p in num_preds]
+for n, line in enumerate(batch_settings):
+	print n, line
+batch_run(batch_settings,num_trials,num_episodes)
+#############################################################################
+
 
 #Speficif experiments
 alphas	    = [0.1, 0.2, 0.3, 0.4, 0.5]
@@ -99,4 +111,4 @@ batch_settings = batch_settings + [(algorithm, algo_func, 'selection_func', 'eps
 for n, line in enumerate(batch_settings):
 	print n, line
 
-batch_run(batch_settings,n,num_episodes)
+batch_run(batch_settings,num_trials,num_episodes)

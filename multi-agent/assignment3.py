@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
-
+from plot_results import *
 from environment import *
 from independent_qlearning import *
+from minimax_q import *
 from random import choice
 import numpy as np
 
@@ -73,30 +74,15 @@ def question2():
 
 
 def question3():
-    """
+    state = initialise_state([(10, 10)], (5, 5))
+    plot_winner_scatter(*minimax_q(state))
+    
 
-    Variabeles:
-    V
-    p1,...,p5
-
-    Maximize V
-    s.t.
-
-    p1 + p2 + p3 + p4 + p5 = 1
-    p1 >= 0
-    p2 >= 0
-    p3 >= 0
-    p4 >= 0
-    p5 >= 0
-
-    en een belangrijke sigma constraint!!
-
-    """
 
 def main():
 
     #testion1()
-    question2()
+    question3()
     
 
 if __name__ == '__main__':
