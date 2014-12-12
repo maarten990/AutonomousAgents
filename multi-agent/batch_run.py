@@ -80,6 +80,8 @@ algo_func    = "independent_qlearning"
 ###########################################################################################
 batch_settings = [('Q',"independent_qlearning",'alpha',0.5,p) for p in num_preds]
 batch_settings.reverse()
+for n, line in enumerate(batch_settings):
+	print n, line
 batch_run(batch_settings,n,num_episodes)
 #############################################################################
 
