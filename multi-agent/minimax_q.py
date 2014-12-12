@@ -5,7 +5,7 @@ from numpy import min, max, argmax
 from independent_qlearning import *
 from pulp import * 
 
-def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=False):
+def minimax_q(initial_state, gamma=0.5, explore=0.1,num_episodes=50,verbose=False):
 	if len(initial_state) > 1:
 		print 'Error: minimax_q only works for a single predator'
 		return
@@ -65,7 +65,7 @@ def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=Fals
 			p5 = LpVariable("p5", 0, 1)
 			a1, a2, a3, a4, a5 = pred_actions
 
-			prob = LpProblem("myProblem", LpMaximize)
+			prob = LpProblem("minimaxQ", LpMaximize)
 
 			#constraints
 			prob += p1 + p2 + p3 + p4 + p5 == 1 
