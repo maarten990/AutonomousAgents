@@ -4,23 +4,25 @@ import matplotlib.pyplot as plt
 
 def main():
 
-	single_setting_line_plot(var_value=0.2)
-	var_effect_line_plot()
+	#single_setting_line_plot(var_value=0.2)
 
-	var_effect_line_plot(changevar='alphas',var_values=[0.1, 0.2, 0.3, 0.4, 0.5])
-	var_effect_line_plot(changevar='alphas',var_values=[0.1, 0.2, 0.3, 0.4, 0.5],plotWinners=True)
+	var_effect_line_plot(changevar='alpha',var_values=[0.1, 0.2, 0.3, 0.4, 0.5])
+	var_effect_line_plot(changevar='alpha',var_values=[0.1, 0.2, 0.3, 0.4, 0.5],plotWinners=True)
 
-	var_effect_line_plot(changevar='gammas',var_values=[0.1, 0.5, 0.7, 0.9])
-	var_effect_line_plot(changevar='gammas',var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
+	var_effect_line_plot(changevar='epsilon',greekVar=False,var_values=[0,0.1,0.5,0.9])
+	var_effect_line_plot(changevar='epsilon',greekVar=False,var_values=[0,0.1,0.5,0.9],plotWinners=True)	
 
-	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50])
-	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+	var_effect_line_plot(changevar='epsilon',greekVar=True,var_values=[0, 5, 15, 50])
+	var_effect_line_plot(changevar='epsilon',greekVar=True,var_values=[0, 5, 15, 50],plotWinners=True)
 
-	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50])
-	var_effect_line_plot(changevar='init_values',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+	var_effect_line_plot(changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9])
+	var_effect_line_plot(changevar='gamma',var_values=[0.1, 0.5, 0.7, 0.9],plotWinners=True)
 
-	var_effect_line_plot(changevar='selection_func',greekVar=False,var_values=['epsilon_greedy({0})'.format(e) for e in  [0,0.1,0.5,0.9]])
-	var_effect_line_plot(changevar='selection_func',greekVar=False,var_values=['epsilon_greedy({0})'.format(e) for e in  [0,0.1,0.5,0.9]],plotWinners=True)
+	var_effect_line_plot(changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50])
+	var_effect_line_plot(changevar='initial_value',greekVar=False,var_values=[0, 5, 15, 50],plotWinners=True)
+
+
+
 	
 
 
@@ -40,6 +42,7 @@ def load_results(algorithm,num_pred,changevar,var_value):
 
 		return winners_mat, steps_mat
 	else:
+		print 'No such file:' + filebase
 		return np.array(False), np.array(False)
 
 
@@ -99,9 +102,9 @@ def var_effect_line_plot(algorithm="Q",num_pred =2,changevar="alpha",var_values=
 
 			xs = range(len(yvar))
 			if greekVar:
-				plt.plot(xs, yvar, label=r'$\{0}: {1}$'.format(changevar, var_value))
+				plt.plot(xs, yvar, label=r'$\{0}: {1}$'.format(changevar.replace('_',' '), var_value))
 			else:
-				plt.plot(xs, yvar, label='${0}: {1}$'.format(changevar, var_value))
+				plt.plot(xs, yvar, label='${0}: {1}$'.format(changevar.replace('_',' '), var_value))
 
 
 	plt.legend()

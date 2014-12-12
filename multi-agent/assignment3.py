@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
-
+from plot_results import *
 from environment import *
 from independent_qlearning import *
+from minimax_q import *
 from random import choice
 import numpy as np
 
@@ -74,7 +75,7 @@ def question2():
 
 def question3():
     state = initialise_state([(10, 10)], (5, 5))
-    minimax_q()
+    plot_winner_scatter(*minimax_q(state))
     
 
 

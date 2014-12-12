@@ -1,70 +1,94 @@
 from collections import defaultdict
 from environment import *
-from random import random
+import random as rnd
 from numpy import min, max, argmax
-from qlearning import *
+from independent_qlearning import *
 from pulp import * 
 
-def minimax_q_step(initial_state, gamma=1.0, decay=1.0, explore=epsilon_greedy(0.1)):
-    if len(initial_state) > 1:
-        print 'Error: minimax_q only works for a single predator'
-        return
+def minimax_q(initial_state, gamma=0.9, explore=0.1,num_episodes=50,verbose=False):
+	if len(initial_state) > 1:
+		print 'Error: minimax_q only works for a single predator'
+		return
 
-    # initialise variables
-    pred_actions = possible_actions
-    prey_actions = possible_actions
+	# vector of the number of steps it takes to catch the prey, used for
+	# plotting. And one to decide who won
+	steps = []
 
-    Q  = defaultdict(lambda: 1)
-    V  = defaultdict(lambda: 1)
-    pi_pred = defaultdict(lambda: 1 / len(A))
-    pi_prey = defaultdict(lambda: 1 / len(O))
+	# initialise variables
+	pred_actions = possible_actions
+	prey_actions = possible_actions
 
-    alpha = 1
+	Q  = defaultdict(lambda: 1.0)
+	V  = defaultdict(lambda: 1.0)
+	pi_pred = defaultdict(lambda: 1.0 / len(pred_actions))
+	pi_prey = defaultdict(lambda: 1.0 / len(prey_actions))
 
-    state = initial_state
+	for episode in xrange(num_episodes):
 
-    while alpha > 1e-6:
-        # choose an action
-        if random() < explore:
-            a = random.sample(A)
-        else:
-            a = sample(A, [pi_pred[(state, pred_actions)] for action in
-                pred_actions])
+		if verbose: print "Episode {0}".format(episode)
 
-        if random() < explore:
-            o = random.sample(O)
-        else:
-            o = sample(O, [pi_prey[(state, prey_actions)] for action in
-                prey_actions])
+		state = initial_state
+		num_steps = 0
 
-        # learn
-        pred_reward, _ = reward(state)
-        newstate = step(state, a, o)
+		while not terminal(state):
+			num_steps += 1
 
-        Q[(s, a, o)] = (1 - alpha) * Q[(s, a, o)] + alpha * (pred_reward + gamma
-                * V[newstate])
+			alpha = 0.5
 
-        #### LINEAR PROGRAMMING GOES HERE
-        ####
-        V_new  = LpVariable("V",-100000000,1000000000)
-        p1 = LpVariable("p1", 0, 1)
-        p2 = LpVariable("p2", 0, 1)
-        p3 = LpVariable("p3", 0, 1)
-        p4 = LpVariable("p4", 0, 1)
-        p5 = LpVariable("p5", 0, 1)
+			# choose an action
+			if rnd.random() < explore:
+				a = rnd.choice(pred_actions)
+			else:
+				a = sample(pred_actions, [pi_pred[(state, action)] for action in
+					pred_actions])
 
-        prob = LpProblem("myProblem", lpMaximize)
+			if rnd.random() < explore:
+				o = rnd.choice(prey_actions)
+			else:
+				o = sample(prey_actions, [pi_prey[(state, action)] for action in
+					prey_actions])
 
-        #constraints
-        prob += P1 + p2 + p3 + p4 + p5 = 1
+			# learn
+			pred_reward, _ = reward(state)
+			newstate = step(state, [a], o)
 
-        for o = 1:5:
-            prob += Q(s,a1,o)*p1 + Q(s,a2,o)*p2 + Q(s,a3,o)*p3 + Q(s,a4,o)*p4 + Q(s,a5,o)*p5 -V_new >= 0
-    
-        #objective function
-        status = prob.solve(GLPK(msg = 0))
-        LpStatus[status]
-        C[state] = value(V_new)
+			Q[(state, a, o)] = (1 - alpha) * Q[(state, a, o)] + alpha * (pred_reward + gamma
+					* V[newstate])
 
-        # update state
-        state = newstate
+			#### LINEAR PROGRAMMING GOES HERE
+			####
+			V_new  = LpVariable("V")
+			p1 = LpVariable("p1", 0, 1)
+			p2 = LpVariable("p2", 0, 1)
+			p3 = LpVariable("p3", 0, 1)
+			p4 = LpVariable("p4", 0, 1)
+			p5 = LpVariable("p5", 0, 1)
+			a1, a2, a3, a4, a5 = pred_actions
+
+			prob = LpProblem("myProblem", LpMaximize)
+
+			#constraints
+			prob += p1 + p2 + p3 + p4 + p5 == 1 
+
+			for o in prey_actions:
+				prob += Q[(state,a1,o)]*p1 + Q[(state,a2,o)]*p2 + Q[(state,a3,o)]*p3 + Q[(state,a4,o)]*p4 + Q[(state,a5,o)]*p5 - V_new >= 0		
+
+			# Export results
+			status = prob.solve(GLPK(msg = 0))
+			
+			V[state] = value(V_new)
+			pi_pred[(state, a1)] = value(p1)
+			pi_pred[(state, a2)] = value(p2)
+			pi_pred[(state, a3)] = value(p3)
+			pi_pred[(state, a4)] = value(p4)
+			pi_pred[(state, a5)] = value(p5)
+
+			# update state
+			state = newstate
+
+		steps.append(num_steps)
+
+		if verbose: print [ pi_pred[(state,a)] for a in pred_actions]	
+
+	return steps
+
