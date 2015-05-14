@@ -8,7 +8,7 @@
 
 import numpy.random
 
-prey_directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
+prey_directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)] #FIXME: replace this
 prey_cov = np.eye(2)
 
 def run_simulation(state, policy, verbose):
