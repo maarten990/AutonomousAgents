@@ -9,7 +9,7 @@
 import numpy.random
 
 prey_directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
-prey_probabilities = [0.8, 0.05, 0.05, 0.05, 0.05]
+prey_cov = np.eye(2)
 
 def run_simulation(state, policy, verbose):
     "Run a full simulation and return the number of steps until dead bunny"
@@ -27,7 +27,8 @@ def run_simulation(state, policy, verbose):
 def step(state, policy):
     """
     Advance the state by one step using the given policy.
-    The policy is a dictionary mapping the state to an action performed by the
+    The policy is an *object* with a __getitem__ dictionary-like 
+    overload that, given the state, returns an action performed by the
     predator.
     """
     newstate = update_state(state, policy[state])
@@ -37,7 +38,10 @@ def step(state, policy):
 
 def terminal(state):
     "Returns wether we're in a terminal state (i.e. dead bunny)"
-    return state == (0, 0)
+    x,y = state
+    epsilon = 0.1 #FIXME value
+    terminal_x, terminal_y = (0., 0.)
+    return abs(x - terminal_x) < epsilon and abs(y - terminal_y) < epsilon 
 
 def reward(state):
     "Returns the reward of the state"
@@ -45,7 +49,7 @@ def reward(state):
     
 def prey_policy():
     "Constant prey policy used for the simulation"
-    return sample(prey_directions, prey_probabilities)
+    return sample_gaussian(prey_cov)
 
 def sample(directions, probabilities):
     """
@@ -55,6 +59,15 @@ def sample(directions, probabilities):
     ids = range(len(directions))
     id = numpy.random.choice(ids, p=probabilities)
     return directions[id]
+
+def sample_gaussian(cov):
+    """
+    Given a covariance matrix that describes the extent of the possible
+    directions, sample one direction 2d vector
+    """
+    sample = numpy.random.multivariate_normal((0.,0.),cov)
+    direction = tuple(sample)
+    return direction
 
 def successors(direction, state):
     """
