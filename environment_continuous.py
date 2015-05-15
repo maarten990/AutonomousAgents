@@ -7,6 +7,7 @@
 # (inclusive).
 
 import numpy.random
+import sklearn.linear_model
 
 prey_directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)] #FIXME: replace this
 prey_cov = np.eye(2)
@@ -123,7 +124,7 @@ def update_prey(state):
 
     return sample(new_states, probabilities)
 
-def fvi(S,m,A,P,k,R,gamma): # FIXME: maybe split in several functions
+def fvi(S,m,A,P,k,R,gamma,phi): # FIXME: maybe split in several functions
     
     # randomly sample s^(1)..s^(m) from S
     S_samples = []
@@ -132,6 +133,8 @@ def fvi(S,m,A,P,k,R,gamma): # FIXME: maybe split in several functions
         S_samples.append(curr_sample)
 
     
+    V = lambda _s: 0 # first V, always returns 0
+
     while True:
         y = []
         for i in range(m):
@@ -149,7 +152,14 @@ def fvi(S,m,A,P,k,R,gamma): # FIXME: maybe split in several functions
                 
             y.append(max(q.values()))
 
-        # FIXME: update theta and V...
+        # update theta and V...
+        lr = sklearn.linearmodel.LinearRegression()
+        X = []
+        for i in range(m):
+            X.append(phi(S_samples[i]))
+        lr.fit(np.array(X), np.array(y))
+        
+        V = lambda _s: lr.predict(phi(_s))[0]
 
 def all_states():
     for xdiff in range(-5, 6):
