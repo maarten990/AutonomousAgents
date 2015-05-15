@@ -124,7 +124,7 @@ def update_prey(state):
 
     return sample(new_states, probabilities)
 
-def fvi(n_iterations,S,m,A,P,k,R,gamma,phi): # FIXME: maybe split in several functions
+def fvi(n_iterations,S,m,A,transition,k,R,gamma,phi): # FIXME: maybe split in several functions
     
     # randomly sample s^(1)..s^(m) from S
     s = [
@@ -143,7 +143,9 @@ def fvi(n_iterations,S,m,A,P,k,R,gamma,phi): # FIXME: maybe split in several fun
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
                 s_primes = []
                 for j in range(k):
-                    curr_s_prime = P(s[i],a)
+                    # the `transition` function might be deterministic
+                    # or stochastic (using P_{s^(i)a}(s') transition probabilities)
+                    curr_s_prime = transition(s[i],a)
                     s_primes.append(curr_s_prime)
 
                 for j in range(k):
