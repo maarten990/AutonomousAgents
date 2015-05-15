@@ -127,10 +127,10 @@ def update_prey(state):
 def fvi(S,m,A,P,k,R,gamma,phi): # FIXME: maybe split in several functions
     
     # randomly sample s^(1)..s^(m) from S
-    S_samples = []
+    s = []
     for i in range(m):
         curr_sample = tuple((np.random.random((1,2))*11).tolist()[0])
-        S_samples.append(curr_sample)
+        s.append(curr_sample)
 
     
     V = lambda _s: 0 # first V, always returns 0
@@ -143,20 +143,18 @@ def fvi(S,m,A,P,k,R,gamma,phi): # FIXME: maybe split in several functions
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
                 s_primes = []
                 for j in range(k):
-                    curr_s_prime = P(S_samples[i],a)
+                    curr_s_prime = P(s[i],a)
                     s_primes.append(curr_s_prime)
 
                 for j in range(k):
-                    q[a] = R(S_samples[i]) + (float(gamma)/float(k)) \
+                    q[a] = R(s[i]) + (float(gamma)/float(k)) \
                         * sum([V(s_primes[j]) for j in range(k)]) 
                 
             y.append(max(q.values()))
 
         # update theta and V...
         lr = sklearn.linearmodel.LinearRegression()
-        X = []
-        for i in range(m):
-            X.append(phi(S_samples[i]))
+        X = [ phi(s_i) for s_i in s]
         lr.fit(np.array(X), np.array(y))
         
         V = lambda _s: lr.predict(phi(_s))[0]
