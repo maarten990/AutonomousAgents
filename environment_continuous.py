@@ -25,6 +25,11 @@ def run_simulation(state, policy, verbose):
 
     return steps
 
+def transition_as_seen_by_predator(state, action): # FIXME: shorter function name?
+    newstate = update_state(state, action)
+    newstate = update_state(newstate, prey_policy())
+    return newstate
+
 def step(state, policy):
     """
     Advance the state by one step using the given policy.
@@ -32,9 +37,7 @@ def step(state, policy):
     overload that, given the state, returns an action performed by the
     predator.
     """
-    newstate = update_state(state, policy[state])
-    newstate = update_state(newstate, prey_policy())
-
+    newstate = transition_as_seen_by_predator(state, policy[state])
     return newstate
 
 def terminal(state):
@@ -102,8 +105,8 @@ def update_state(state, direction):
     movement_x, movement_y = direction
 
     # the distance is modulo 11, but shifted to the range (-5, 5)
-    newx = ((dist_x + movement_x + 5) % 11) - 5
-    newy = ((dist_y + movement_y + 5) % 11) - 5
+    newx = ((dist_x + movement_x + 5.) % 11.) - 5.
+    newy = ((dist_y + movement_y + 5.) % 11.) - 5.
 
     return (newx, newy)
 
@@ -139,7 +142,9 @@ def fvi(n_iterations,S,m,A,transition,k,R,gamma,phi): # FIXME: maybe split in se
         y = []
         for i in range(m):
             q = {}
-            for a in A:
+            for a in A: # FIXME: actually, actions are also continuous, 
+                        # so we have to sample also the actions in a
+                        # similar way as we do with states
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
                 s_primes = []
                 for j in range(k):
@@ -149,6 +154,8 @@ def fvi(n_iterations,S,m,A,transition,k,R,gamma,phi): # FIXME: maybe split in se
                     s_primes.append(curr_s_prime)
 
                 for j in range(k):
+                    # here the summation differs from the original FVI
+                    # algorithm: here it has been pushed as far as possible.
                     q[a] = R(s[i]) + (float(gamma)/float(k)) \
                         * sum([V(s_primes[j]) for j in range(k)]) 
                 
