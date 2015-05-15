@@ -123,6 +123,34 @@ def update_prey(state):
 
     return sample(new_states, probabilities)
 
+def fvi(S,m,A,P,k,R,gamma): # FIXME: maybe split in several functions
+    
+    # randomly sample s^(1)..s^(m) from S
+    S_samples = []
+    for i in range(m):
+        curr_sample = tuple((np.random.random((1,2))*11).tolist()[0])
+        S_samples.append(curr_sample)
+
+    
+    while True:
+        y = []
+        for i in range(m):
+            q = {}
+            for a in A:
+                # sample s^'_1..s^'_k ~ P_{s^(i)a}
+                s_primes = []
+                for j in range(k):
+                    curr_s_prime = P(S_samples[i],a)
+                    s_primes.append(curr_s_prime)
+
+                for j in range(k):
+                    q[a] = R(S_samples[i]) + (float(gamma)/float(k)) \
+                        * sum([V(s_primes[j]) for j in range(k)]) 
+                
+            y.append(max(q.values()))
+
+        # FIXME: update theta and V...
+
 def all_states():
     for xdiff in range(-5, 6):
         for ydiff in range(-5, 6):
