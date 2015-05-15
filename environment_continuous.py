@@ -124,18 +124,18 @@ def update_prey(state):
 
     return sample(new_states, probabilities)
 
-def fvi(S,m,A,P,k,R,gamma,phi): # FIXME: maybe split in several functions
+def fvi(n_iterations,S,m,A,P,k,R,gamma,phi): # FIXME: maybe split in several functions
     
     # randomly sample s^(1)..s^(m) from S
-    s = []
-    for i in range(m):
-        curr_sample = tuple((np.random.random((1,2))*11).tolist()[0])
-        s.append(curr_sample)
-
+    s = [
+        tuple((np.random.random((1,2))*11).tolist()[0])
+        for i
+        in range(m)
+    ]
     
     V = lambda _s: 0 # first V, always returns 0
 
-    while True:
+    for _iteration in range(n_iterations):
         y = []
         for i in range(m):
             q = {}
