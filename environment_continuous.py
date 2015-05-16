@@ -145,7 +145,8 @@ def uniform_circle_sample(center_x,center_y,radius):
     return (x, y)
 
 def sample_predator_action():
-    return uniform_circle_sample(0.,0.,1.5)
+    diameter = 1.5
+    return uniform_circle_sample(0.,0.,diameter/2.)
 
 def fvi( # FIXME: maybe split in several functions
         n_iterations, # number of iterations, arbitrary
