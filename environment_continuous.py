@@ -9,7 +9,6 @@
 import numpy.random
 import sklearn.linear_model
 
-prey_directions = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)] #FIXME: replace this
 prey_cov = np.eye(2)
 
 def run_simulation(state, policy, verbose):
@@ -155,7 +154,7 @@ def fvi( # FIXME: maybe split in several functions
         transition, # transition(s,a) function for next state generation, for example `transition_as_seen_by_predator`
         k, # number of state transition samplings
         R, # reward function
-        gamma, 
+        gamma, # future discounting coefficient
         phi # function from a state producing (deterministically) a feature vector
     ):
     
@@ -163,31 +162,31 @@ def fvi( # FIXME: maybe split in several functions
     s = [
         tuple((np.random.random((1,2))*11).tolist()[0]) # FIXME: needs dedicated function
         for i
-        in range(m)
+        in xrange(m)
     ]
     
     V = lambda _s: 0 # first V, always returns 0
 
-    for _iteration in range(n_iterations):
+    for _iteration in xrange(n_iterations):
         y = []
-        for i in range(m):
+        for i in xrange(m):
             q = {}
-            for a in [sample_predator_action() for _unused in range(num_a)] : # not only states, but actions are also continuous, 
+            for a in [sample_predator_action() for _unused in xrange(num_a)] : # not only states, but actions are also continuous, 
                         # so we have to sample also the actions in a
                         # similar way as we do with states
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
                 s_primes = []
-                for j in range(k):
+                for j in xrange(k):
                     # the `transition` function might be deterministic
                     # or stochastic (using P_{s^(i)a}(s') transition probabilities)
                     curr_s_prime = transition(s[i],a)
                     s_primes.append(curr_s_prime)
 
-                for j in range(k):
+                for j in xrange(k):
                     # here the summation differs from the original FVI
                     # algorithm: here it has been pushed as far as possible.
                     q[a] = R(s[i]) + (float(gamma)/float(k)) \
-                        * sum([V(s_primes[j]) for j in range(k)]) 
+                        * sum([V(s_primes[j]) for j in xrange(k)]) 
                 
             y.append(max(q.values()))
 
