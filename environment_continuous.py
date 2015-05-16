@@ -157,11 +157,18 @@ def fvi( # FIXME: maybe split in several functions
         gamma, # future discounting coefficient
         phi # function from a state producing (deterministically) a feature vector
     ):
-    
+    """
+    Fitted Value Iteration algorithm.
+    How it differs from Ng's description:
+    - actions are also sampled because they are continuous instead of discrete
+    - the transition probability distribution P_{sa}(s') is not explicit
+      but is expressed implicitly in the production of the next state
+      inside the `transition` function (which might even be deterministic)
+    """
     # randomly sample s^(1)..s^(m) from S
     s = [
         tuple((np.random.random((1,2))*11).tolist()[0]) # FIXME: needs dedicated function
-        for i
+        for _
         in xrange(m)
     ]
     
@@ -171,7 +178,7 @@ def fvi( # FIXME: maybe split in several functions
         y = []
         for i in xrange(m):
             q = {}
-            for a in [sample_predator_action() for _unused in xrange(num_a)] : # not only states, but actions are also continuous, 
+            for a in [sample_predator_action() for _ in xrange(num_a)] : # not only states, but actions are also continuous, 
                         # so we have to sample also the actions in a
                         # similar way as we do with states
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
