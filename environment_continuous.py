@@ -127,11 +127,40 @@ def update_prey(state):
 
     return sample(new_states, probabilities)
 
-def fvi(n_iterations,S,m,A,transition,k,R,gamma,phi): # FIXME: maybe split in several functions
+def uniform_circle_sample(center_x,center_y,radius):
+    """
+    sample from a uniform circle
+    """   
+    while True:
+        # uniform from -1..+1,-1..+1 square
+        (u_x,u_y), = (np.random.random((1,2)) * 2.) - 1. 
+        
+        # test if belongs to a circle with (0,0) center and radius 1
+        if u_x**2. + u_y**2. <= 1.:
+            break # otherwise reject
+
+    # scale the sample to the desired center and radius
+    x = center_x + (u_x * radius)
+    y = center_y + (u_y * radius)
+    return (x, y)
+
+def sample_predator_action():
+    return uniform_circle_sample(0.,0.,1.5)
+
+def fvi( # FIXME: maybe split in several functions
+        n_iterations, # number of iterations, arbitrary
+        m, # number of state samplings
+        num_a, # number of action samplings, A is not discrete, so we need to sample from it
+        transition, # transition(s,a) function for next state generation, for example `transition_as_seen_by_predator`
+        k, # number of state transition samplings
+        R, # reward function
+        gamma, 
+        phi # function from a state producing (deterministically) a feature vector
+    ):
     
     # randomly sample s^(1)..s^(m) from S
     s = [
-        tuple((np.random.random((1,2))*11).tolist()[0])
+        tuple((np.random.random((1,2))*11).tolist()[0]) # FIXME: needs dedicated function
         for i
         in range(m)
     ]
@@ -142,7 +171,7 @@ def fvi(n_iterations,S,m,A,transition,k,R,gamma,phi): # FIXME: maybe split in se
         y = []
         for i in range(m):
             q = {}
-            for a in A: # FIXME: actually, actions are also continuous, 
+            for a in [sample_predator_action() for _unused in range(num_a)] : # not only states, but actions are also continuous, 
                         # so we have to sample also the actions in a
                         # similar way as we do with states
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
