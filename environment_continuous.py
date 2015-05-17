@@ -151,6 +151,13 @@ def sample_predator_action():
     diameter = 1.5
     return uniform_circle_sample(0.,0.,diameter/2.)
 
+def discretized_predator_actions():
+    """
+    Since the prey is caught if it's within a distance of 1, we can always catch
+    it if we pretend to be on a grid with edges of length 1
+    """
+    return [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
 def sample_state():
     """
     Return a random state.
@@ -166,7 +173,6 @@ def sample_state():
 def fvi( # FIXME: maybe split in several functions
         n_iterations, # number of iterations, arbitrary
         m, # number of state samplings
-        num_a, # number of action samplings, A is not discrete, so we need to sample from it
         transition, # transition(s,a) function for next state generation, for example `transition_as_seen_by_predator`
         k, # number of state transition samplings
         R, # reward function
@@ -190,10 +196,11 @@ def fvi( # FIXME: maybe split in several functions
         y = []
         for i in xrange(m):
             q = {}
-            for a in [sample_predator_action() for _ in xrange(num_a)] : # not only states, but actions are also continuous, 
-                        # so we have to sample also the actions in a
-                        # similar way as we do with states
+            for a in discretized_predator_actions():
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
+                # TODO: since we know the prey's movement is a zero-mean
+                # Gaussian, we could simplify it by not sampling but instead
+                # assuming that the prey doesn't move?
                 s_primes = []
                 for j in xrange(k):
                     # the `transition` function might be deterministic
@@ -201,20 +208,23 @@ def fvi( # FIXME: maybe split in several functions
                     curr_s_prime = transition(s[i],a)
                     s_primes.append(curr_s_prime)
 
+                q[a] = 0
                 for j in xrange(k):
                     # here the summation differs from the original FVI
                     # algorithm: here it has been pushed as far as possible.
-                    q[a] = R(s[i]) + (float(gamma)/float(k)) \
+                    q[a] += R(s[i]) + (float(gamma)/float(k)) \
                         * sum([V(s_primes[j]) for j in xrange(k)]) 
                 
             y.append(max(q.values()))
 
         # update theta and V...
-        lr = sklearn.linearmodel.LinearRegression()
+        lr = sklearn.linear_model.LinearRegression()
         X = [ phi(s_i) for s_i in s]
         lr.fit(np.array(X), np.array(y))
         
-        V = lambda _s: lr.predict(phi(_s))[0]
+        V = lambda _s: lr.predict(phi(_s))
+
+    return V
 
 def all_states():
     for xdiff in range(-5, 6):
