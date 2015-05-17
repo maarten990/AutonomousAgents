@@ -46,7 +46,7 @@ def terminal(state):
     The prey is caught if it's within a circle of radius 1 around the predator.
     """
     x_diff, y_diff = state
-    distance = np.sqrt(x**2 + y**2)
+    distance = np.sqrt(x_diff**2 + y_diff**2)
 
     return distance <= 1
 
