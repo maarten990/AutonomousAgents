@@ -7,6 +7,7 @@
 # (inclusive).
 
 import numpy.random
+import numpy as np
 import sklearn.linear_model
 
 prey_cov = np.eye(2)
@@ -40,11 +41,14 @@ def step(state, policy):
     return newstate
 
 def terminal(state):
-    "Returns wether we're in a terminal state (i.e. dead bunny)"
-    x,y = state
-    epsilon = 0.1 #FIXME value
-    terminal_x, terminal_y = (0., 0.)
-    return abs(x - terminal_x) < epsilon and abs(y - terminal_y) < epsilon 
+    """
+    Returns wether we're in a terminal state (i.e. dead bunny).
+    The prey is caught if it's within a circle of radius 1 around the predator.
+    """
+    x_diff, y_diff = state
+    distance = np.sqrt(x**2 + y**2)
+
+    return distance <= 1
 
 def reward(state):
     "Returns the reward of the state"
