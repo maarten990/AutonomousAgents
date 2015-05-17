@@ -151,6 +151,18 @@ def sample_predator_action():
     diameter = 1.5
     return uniform_circle_sample(0.,0.,diameter/2.)
 
+def sample_state():
+    """
+    Return a random state.
+    """
+    x_sample = np.random.random()
+    y_sample = np.random.random()
+
+    # shift the sample to the interval [-5, 5], which is the space of valid
+    # differences in an 11x11 world
+    return (10 * x_sample - 5,
+            10 * y_sample - 5)
+
 def fvi( # FIXME: maybe split in several functions
         n_iterations, # number of iterations, arbitrary
         m, # number of state samplings
@@ -170,11 +182,7 @@ def fvi( # FIXME: maybe split in several functions
       inside the `transition` function (which might even be deterministic)
     """
     # randomly sample s^(1)..s^(m) from S
-    s = [
-        tuple((np.random.random((1,2))*11).tolist()[0]) # FIXME: needs dedicated function
-        for _
-        in xrange(m)
-    ]
+    s = [sample_state() for _ in xrange(m)]
     
     V = lambda _s: 0 # first V, always returns 0
 
