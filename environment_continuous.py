@@ -12,7 +12,7 @@ import sklearn.linear_model
 
 prey_cov = np.eye(2)
 
-def run_simulation(state, policy, verbose):
+def run_simulation(state, V, verbose):
     "Run a full simulation and return the number of steps until dead bunny"
     steps = 1
 
@@ -20,25 +20,33 @@ def run_simulation(state, policy, verbose):
         if verbose:
             print_state(state)
 
-        state = step(state, policy)
+        state = step(state, V)
         steps += 1
 
     return steps
+
+
+def benchmark(V, n=100):
+    trials = [run_simulation((5, 5), V, False) for _ in xrange(n)]
+    print 'Average time until prey is caught: {} (stddev {})'.format(np.average(trials),
+                                                                     np.std(trials))
 
 def transition_as_seen_by_predator(state, action): # FIXME: shorter function name?
     newstate = update_state(state, action)
     newstate = update_state(newstate, prey_policy())
     return newstate
 
-def step(state, policy):
+
+def step(state, V):
     """
     Advance the state by one step using the given policy.
     The policy is an *object* with a __getitem__ dictionary-like 
     overload that, given the state, returns an action performed by the
     predator.
     """
-    newstate = transition_as_seen_by_predator(state, policy[state])
+    newstate = transition_as_seen_by_predator(state, select_action(V, state))
     return newstate
+
 
 def terminal(state):
     """
@@ -50,13 +58,16 @@ def terminal(state):
 
     return distance <= 1
 
+
 def reward(state):
     "Returns the reward of the state"
     return 10 if terminal(state) else 0
     
+
 def prey_policy():
     "Constant prey policy used for the simulation"
     return sample_gaussian(prey_cov)
+
 
 def sample(directions, probabilities):
     """
@@ -67,6 +78,7 @@ def sample(directions, probabilities):
     id = numpy.random.choice(ids, p=probabilities)
     return directions[id]
 
+
 def sample_gaussian(cov):
     """
     Given a covariance matrix that describes the extent of the possible
@@ -75,6 +87,7 @@ def sample_gaussian(cov):
     sample = numpy.random.multivariate_normal((0.,0.),cov)
     direction = tuple(sample)
     return direction
+
 
 def successors(direction, state):
     """
@@ -97,8 +110,6 @@ def successors(direction, state):
         
     return new_states
 
-def print_state(state):
-    pass
 
 def update_state(state, direction):
     """
@@ -112,6 +123,7 @@ def update_state(state, direction):
     newy = ((dist_y + movement_y + 5.) % 11.) - 5.
 
     return (newx, newy)
+
 
 def update_prey(state):
     # can't escape if the predator is on top of the prey
@@ -130,6 +142,7 @@ def update_prey(state):
 
     return sample(new_states, probabilities)
 
+
 def uniform_circle_sample(center_x,center_y,radius):
     """
     sample from a uniform circle
@@ -147,9 +160,11 @@ def uniform_circle_sample(center_x,center_y,radius):
     y = center_y + (u_y * radius)
     return (x, y)
 
+
 def sample_predator_action():
     diameter = 1.5
     return uniform_circle_sample(0.,0.,diameter/2.)
+
 
 def discretized_predator_actions():
     """
@@ -157,6 +172,7 @@ def discretized_predator_actions():
     it if we pretend to be on a grid with edges of length 1
     """
     return [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
 
 def sample_state():
     """
@@ -170,12 +186,12 @@ def sample_state():
     return (10 * x_sample - 5,
             10 * y_sample - 5)
 
+
 def fvi( # FIXME: maybe split in several functions
         n_iterations, # number of iterations, arbitrary
-        m, # number of state samplings
-        transition, # transition(s,a) function for next state generation, for example `transition_as_seen_by_predator`
+        sample_states, # function that returns a list of sampled states
+        sample_actions, # function that returns a list of sampled actions
         k, # number of state transition samplings
-        R, # reward function
         gamma, # future discounting coefficient
         phi # function from a state producing (deterministically) a feature vector
     ):
@@ -187,47 +203,85 @@ def fvi( # FIXME: maybe split in several functions
       but is expressed implicitly in the production of the next state
       inside the `transition` function (which might even be deterministic)
     """
-    # randomly sample s^(1)..s^(m) from S
-    s = [sample_state() for _ in xrange(m)]
-    
+
     V = lambda _s: 0 # first V, always returns 0
 
     for _iteration in xrange(n_iterations):
+        states = sample_states() 
+        actions = sample_actions()
+    
         y = []
-        for i in xrange(m):
+        for state in states:
             q = {}
-            for a in discretized_predator_actions():
+            for a in actions:
                 # sample s^'_1..s^'_k ~ P_{s^(i)a}
                 # TODO: since we know the prey's movement is a zero-mean
                 # Gaussian, we could simplify it by not sampling but instead
                 # assuming that the prey doesn't move?
-                s_primes = []
-                for j in xrange(k):
-                    # the `transition` function might be deterministic
-                    # or stochastic (using P_{s^(i)a}(s') transition probabilities)
-                    curr_s_prime = transition(s[i],a)
-                    s_primes.append(curr_s_prime)
+                s_primes = [transition_as_seen_by_predator(state, a) for _ in xrange(k)]
 
-                q[a] = 0
-                for j in xrange(k):
-                    # here the summation differs from the original FVI
-                    # algorithm: here it has been pushed as far as possible.
-                    q[a] += R(s[i]) + (float(gamma)/float(k)) \
-                        * sum([V(s_primes[j]) for j in xrange(k)]) 
+                q[a] = sum([reward(state) + gamma * V(s_prime)
+                            for s_prime in s_primes]) / float(k)
                 
             y.append(max(q.values()))
 
         # update theta and V...
         lr = sklearn.linear_model.LinearRegression()
-        X = [ phi(s_i) for s_i in s]
-        lr.fit(np.array(X), np.array(y))
+        X = [phi(s) for s in states]
+        X = np.array([X]).T
+        Y = np.array(y)
+        lr.fit(X, Y)
         
-        V = lambda _s: lr.predict(phi(_s))
+        V = lambda s: lr.predict(phi(s))[0]
 
     return V
 
+
+def select_action(V, state):
+    return max(discretized_predator_actions(), key=lambda a: V(update_state(state, a)))
+
+
 def all_states():
+    states = []
     for xdiff in range(-5, 6):
         for ydiff in range(-5, 6):
-            yield (xdiff, ydiff)
+            states.append((xdiff, ydiff))
 
+    return states
+
+
+# TODO:
+#   - (trivial) option to run the benchmark at every step of the FVI algorithm
+#     so that we can easily plot the convergence rate
+#   - (non-trivial) figure out how to maximize over actions so that we can make
+#     use of the continuous actionspace
+def main():
+    """
+    Perform tests with discretized movement and various state samplings.
+    """
+
+    # use the Euclidian distance as feature for regression
+    phi = lambda x: np.sqrt(x[0]**2 + x[1]**2)
+
+    # random policy with constant value function
+    V_random = lambda _: 0
+
+    # states sampled as an 11x11 grid, mimicking the discrete world of AA1
+    V_discrete = fvi(100, all_states, discretized_predator_actions, 10, 0.9,
+                     phi)
+
+    # 100 randomly sampled states
+    V_100 = fvi(100, lambda: [sample_state() for _ in xrange(100)],
+                discretized_predator_actions, 10, 0.9, phi)
+
+    # 10 randomly sampled states
+    V_10 = fvi(100, lambda: [sample_state() for _ in xrange(10)],
+                discretized_predator_actions, 10, 0.9, phi)
+
+    benchmark(V_random)
+    benchmark(V_discrete)
+    benchmark(V_100)
+    benchmark(V_10)
+
+if __name__ == '__main__':
+    main()
