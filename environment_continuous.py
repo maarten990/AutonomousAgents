@@ -12,24 +12,20 @@ import sklearn.linear_model
 
 prey_cov = np.eye(2)
 
-def run_simulation(state, V, verbose):
+def run_simulation(state, V, action_func):
     "Run a full simulation and return the number of steps until dead bunny"
     steps = 1
 
     while not terminal(state):
-        if verbose:
-            print_state(state)
-
-        state = step(state, V)
+        state = step(state, V, action_func)
         steps += 1
 
     return steps
 
 
-def benchmark(V, n=100):
-    trials = [run_simulation((5, 5), V, False) for _ in xrange(n)]
-    print 'Average time until prey is caught: {} (stddev {})'.format(np.average(trials),
-                                                                     np.std(trials))
+def benchmark(V, action_func, n=100):
+    trials = [run_simulation((5, 5), V, action_func) for _ in xrange(n)]
+    return np.average(trials), np.std(trials)
 
 def transition_as_seen_by_predator(state, action): # FIXME: shorter function name?
     newstate = update_state(state, action)
@@ -37,14 +33,14 @@ def transition_as_seen_by_predator(state, action): # FIXME: shorter function nam
     return newstate
 
 
-def step(state, V):
+def step(state, V, action_func):
     """
     Advance the state by one step using the given policy.
     The policy is an *object* with a __getitem__ dictionary-like 
     overload that, given the state, returns an action performed by the
     predator.
     """
-    newstate = transition_as_seen_by_predator(state, select_action(V, state))
+    newstate = transition_as_seen_by_predator(state, action_func(V, state))
     return newstate
 
 
@@ -237,9 +233,22 @@ def fvi( # FIXME: maybe split in several functions
     return V
 
 
-def select_action(V, state):
+def select_action_discrete(V, state):
     return max(discretized_predator_actions(), key=lambda a: V(update_state(state, a)))
 
+
+def select_action_continuous(V, state, n=25):
+    """n = number of potential actions to sample"""
+    potential_actions = np.linspace(-1.5, 1.5, n)
+
+    # since the value function is dome-shaped, we can optimize the x and y
+    # directions seperately
+    action_x = max(potential_actions, key=lambda a: V(update_state(state, (a, 0))))
+    state = update_state(state, (action_x, 0))
+
+    action_y = max(potential_actions, key=lambda a: V(update_state(state, (0, a))))
+
+    return action_x, action_y
 
 def all_states():
     states = []
@@ -278,10 +287,28 @@ def main():
     V_10 = fvi(100, lambda: [sample_state() for _ in xrange(10)],
                 discretized_predator_actions, 10, 0.9, phi)
 
-    benchmark(V_random)
-    benchmark(V_discrete)
-    benchmark(V_100)
-    benchmark(V_10)
+    print '---- Discrete actions ----'
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_random,
+                                                                      select_action_discrete))
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_discrete,
+                                                                      select_action_discrete))
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_100,
+                                                                      select_action_discrete))
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_10,
+                                                                      select_action_discrete))
+    print
+
+    print '---- Continous Actions ----'
+
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_random,
+                                                                      select_action_continuous))
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_discrete,
+                                                                      select_action_continuous))
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_100,
+                                                                      select_action_continuous))
+    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_10,
+                                                                      select_action_continuous))
+    print
 
 if __name__ == '__main__':
     main()
