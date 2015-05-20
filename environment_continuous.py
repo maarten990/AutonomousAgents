@@ -262,8 +262,6 @@ def all_states():
 # TODO:
 #   - (trivial) option to run the benchmark at every step of the FVI algorithm
 #     so that we can easily plot the convergence rate
-#   - (non-trivial) figure out how to maximize over actions so that we can make
-#     use of the continuous actionspace
 def main():
     """
     Perform tests with discretized movement and various state samplings.
@@ -288,25 +286,25 @@ def main():
                 discretized_predator_actions, 10, 0.9, phi)
 
     print '---- Discrete actions ----'
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_random,
+    print 'Random policy, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_random,
                                                                       select_action_discrete))
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_discrete,
+    print 'Grid sampling, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_discrete,
                                                                       select_action_discrete))
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_100,
+    print '100 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_100,
                                                                       select_action_discrete))
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_10,
+    print '10 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_10,
                                                                       select_action_discrete))
     print
 
     print '---- Continous Actions ----'
 
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_random,
+    print 'Random policy, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_random,
                                                                       select_action_continuous))
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_discrete,
+    print 'Grid sampling, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_discrete,
                                                                       select_action_continuous))
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_100,
+    print '100 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_100,
                                                                       select_action_continuous))
-    print 'Random policy, average steps taken: {} (stddev {})'.format(*benchmark(V_10,
+    print '10 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_10,
                                                                       select_action_continuous))
     print
 
