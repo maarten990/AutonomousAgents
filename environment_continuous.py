@@ -9,6 +9,7 @@
 import numpy.random
 import numpy as np
 import sklearn.linear_model
+import matplotlib.pyplot as plt
 
 prey_cov = np.eye(2)
 
@@ -189,7 +190,8 @@ def fvi( # FIXME: maybe split in several functions
         sample_actions, # function that returns a list of sampled actions
         k, # number of state transition samplings
         gamma, # future discounting coefficient
-        phi # function from a state producing (deterministically) a feature vector
+        phi, # function from a state producing (deterministically) a feature vector
+        benchmarking=False # keep track of the convergence speed
     ):
     """
     Fitted Value Iteration algorithm.
@@ -201,8 +203,13 @@ def fvi( # FIXME: maybe split in several functions
     """
 
     V = lambda _s: 0 # first V, always returns 0
+    if benchmarking:
+        averages = []
 
     for _iteration in xrange(n_iterations):
+        if benchmarking:
+            averages.append(benchmark(V, select_action_continuous)[0])
+        
         states = sample_states() 
         actions = sample_actions()
     
@@ -230,7 +237,10 @@ def fvi( # FIXME: maybe split in several functions
         
         V = lambda s: lr.predict(phi(s))[0]
 
-    return V
+    if benchmarking:
+        return V, averages
+    else:
+        return V
 
 
 def select_action_discrete(V, state):
@@ -274,39 +284,32 @@ def main():
     V_random = lambda _: 0
 
     # states sampled as an 11x11 grid, mimicking the discrete world of AA1
-    V_discrete = fvi(100, all_states, discretized_predator_actions, 10, 0.9,
-                     phi)
+    V_discrete, conv_disc = fvi(30, all_states, discretized_predator_actions, 10, 0.9,
+                                phi, benchmarking=True)
 
     # 100 randomly sampled states
-    V_100 = fvi(100, lambda: [sample_state() for _ in xrange(100)],
-                discretized_predator_actions, 10, 0.9, phi)
+    V_100, conv_100 = fvi(30, lambda: [sample_state() for _ in xrange(100)],
+                          discretized_predator_actions, 10, 0.9, phi, benchmarking=True)
 
     # 10 randomly sampled states
-    V_10 = fvi(100, lambda: [sample_state() for _ in xrange(10)],
-                discretized_predator_actions, 10, 0.9, phi)
+    V_10, conv_10 = fvi(30, lambda: [sample_state() for _ in xrange(10)],
+                        discretized_predator_actions, 10, 0.9, phi, benchmarking=True)
 
-    print '---- Discrete actions ----'
-    print 'Random policy, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_random,
-                                                                      select_action_discrete))
-    print 'Grid sampling, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_discrete,
-                                                                      select_action_discrete))
-    print '100 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_100,
-                                                                      select_action_discrete))
-    print '10 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_10,
-                                                                      select_action_discrete))
-    print
+    # 1 randomly sampled state
+    V_1, conv_1 = fvi(30, lambda: [sample_state()],
+                      discretized_predator_actions, 10, 0.9, phi, benchmarking=True)
 
-    print '---- Continous Actions ----'
 
-    print 'Random policy, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_random,
-                                                                      select_action_continuous))
-    print 'Grid sampling, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_discrete,
-                                                                      select_action_continuous))
-    print '100 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_100,
-                                                                      select_action_continuous))
-    print '10 random samples, average steps taken:\t{:5.2f} (stddev {})'.format(*benchmark(V_10,
-                                                                      select_action_continuous))
-    print
+    plt.hold(True)
+    plt.xlabel('Iterations')
+    plt.ylabel('Steps to terminal state')
+    plt.plot(conv_disc, label='Grid sampling')
+    plt.plot(conv_100, label='100 random samples')
+    plt.plot(conv_10, label='10 random samples')
+    plt.plot(conv_1, label='1 random sample')
+    plt.legend()
+    plt.savefig('convergence.png')
+    
 
 if __name__ == '__main__':
     main()
