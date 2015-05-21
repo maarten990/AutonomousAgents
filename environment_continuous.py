@@ -81,7 +81,7 @@ def sample_gaussian(cov):
     Given a covariance matrix that describes the extent of the possible
     directions, sample one direction 2d vector
     """
-    sample = numpy.random.multivariate_normal((0.,0.),cov)
+    sample = np.random.multivariate_normal((0., 0.), cov)
     direction = tuple(sample)
     return direction
 
@@ -191,7 +191,8 @@ def fvi( # FIXME: maybe split in several functions
         k, # number of state transition samplings
         gamma, # future discounting coefficient
         phi, # function from a state producing (deterministically) a feature vector
-        benchmarking=False # keep track of the convergence speed
+        benchmarking=False, # keep track of the convergence speed
+        break_on_conv=False # break when the algorithm has converged
     ):
     """
     Fitted Value Iteration algorithm.
@@ -209,6 +210,9 @@ def fvi( # FIXME: maybe split in several functions
     for _iteration in xrange(n_iterations):
         if benchmarking:
             averages.append(benchmark(V, select_action_continuous)[0])
+
+            if len(averages) >= 3 and np.std(averages[-3:]) <= 1 and np.average(averages[-3:]) < 10:
+                break
         
         states = sample_states() 
         actions = sample_actions()
@@ -277,6 +281,7 @@ def main():
     Perform tests with discretized movement and various state samplings.
     """
 
+    """
     # use the Euclidian distance as feature for regression
     phi = lambda x: np.sqrt(x[0]**2 + x[1]**2)
 
@@ -309,6 +314,20 @@ def main():
     plt.plot(conv_1, label='1 random sample')
     plt.legend()
     plt.savefig('convergence.png')
+    """
+
+    time_to_convergence = []
+    phi = lambda x: np.sqrt(x[0]**2 + x[1]**2)
+
+    for n in xrange(1, 10):
+        V, conv = fvi(50, lambda: [sample_state() for _ in xrange(n)],
+                      discretized_predator_actions, 10, 0.9, phi, True, True)
+        time_to_convergence.append(len(conv))
+        
+    plt.plot(time_to_convergence)
+    plt.xlabel('Number of random samples per iteration')
+    plt.ylabel('Steps until FVI convergence')
+    plt.savefig('n_samples.png')
     
 
 if __name__ == '__main__':
