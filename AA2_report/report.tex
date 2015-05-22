@@ -5,6 +5,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{parskip}
 \usepackage{graphicx}
+\usepackage{url}
 
 \begin{document}
 
@@ -54,9 +55,9 @@ number of iterations.
 
 \section*{Implementation} 
 %HOW IT'S MADE
-The algorithm has been implemented in one function
+The algorithm has been implemented in one main function \texttt{fvi}
 that resembles to a certain extent the pseudo-code
-from Ng's lecture notes FIXME:ref.
+from Ng's lecture notes \cite{ng_lecture}.
 
 Behavior has been parametrized by adding a number of lambda functions
 as parameters to the function \texttt{fvi}:
@@ -72,16 +73,39 @@ A good feature vector representation is
 crucial in order to obtain an acceptable regression.
 \end{itemize}
 
+One notable difference from Ng's version is that in our implementation
+the probabilistic model of state transition is not stated explicitly
+as a definition of a probability of transitioning to a new state 
+given a previous state and an action, but is replaced by
+just using a state transition function, whose implementation
+was much easier and intuitive.
+
 \section*{Comparison of Algorithms}
 %new implementations vs old results
 \includegraphics[scale=0.7]{convergence.png}
 \includegraphics[scale=0.7]{n_samples.png}
 
+\section*{Possible improvements}
+
+Since the action space is continuous, different action sampling procedure
+can be experimented. Moreover, different regressors for the 
+$V$ function might be attempted,
+such as \emph{Random Forests} or \emph{Support Vector Regression}.
+
+The sampling of the states might also be focused on states that 
+seem to be more probable, especially in the scenario of 
+an online-focused variant
+of \emph{FVI}. In the absence of such MDP probabilistic model,
+easy-implementable techniques (with \texttt{sklearn}), such as
+\emph{EM-Gaussian Mixture Models} can be fitted
+after exploratory phases. Subsequently,
+states might be sampled from the resulting \emph{GMM}.
+
 \section*{Conclusion}
 % ._.
 
 \section*{References}
-%\bibliographystyle{plain}
-%\bibliography{ref}
+\bibliographystyle{plain}
+\bibliography{ref}
 
 \end{document}
