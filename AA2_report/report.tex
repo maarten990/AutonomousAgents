@@ -163,7 +163,11 @@ after exploratory phases. Subsequently,
 states might be sampled from the resulting \emph{GMM}.
 
 \section*{Conclusion}
-% ._.
+The FVI algorithm performs very well and converges upon the optimal policy
+quickly. This is likely a result of the use of linear regression combined with
+the nature of the MDP; the simple convex value function is well suited for being
+linearly approximated. It retains this performance down to very low sampling
+densities, with even just 2 random samples per iteration performing well.
 
 \section*{References}
 \bibliographystyle{plain}
