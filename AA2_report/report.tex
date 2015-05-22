@@ -21,7 +21,7 @@
 This report describes the extension on an old AA1 assignment for the AA2 course. The existing predator/prey game's environment was changed from discrete to continuous, and the game was optimized using sampling based fitted Q-iteration/value-iteration.%\cite{ng_lecture}\cite{musze}
 
 FVI (Fitted Value Iteration) is an algorithm that is suited for
-continuous state spaces with continuos features extracted from
+continuous state spaces with continuous features extracted from
 the state. 
 The value function of a certain state is inferred by
 extracting at first the features $\phi(s^{(i)})$ 
@@ -91,7 +91,7 @@ methods.
 
 
 We opted for a more brute-force method that makes use of the fact that
-the $x$ and $y$ directions can be optimized seperately: Given a state $s$, first
+the $x$ and $y$ directions can be optimized separately: Given a state $s$, first
 the optimal action in the $x$ direction is calculated as
 \[
   x' = \argmax_x V(transition(s, [x, 0]))
