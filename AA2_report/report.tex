@@ -7,6 +7,8 @@
 \usepackage{graphicx}
 \usepackage{url}
 
+\DeclareMathOperator*{\argmax}{argmax}
+
 \begin{document}
 
 \title{AA2 Practical Assignment}
@@ -54,7 +56,6 @@ This whole procedure is performed iteratively for a pre-determined
 number of iterations.
 
 \section*{Implementation} 
-%HOW IT'S MADE
 The algorithm has been implemented in one main function \texttt{fvi}
 that resembles to a certain extent the pseudo-code
 from Ng's lecture notes \cite{ng_lecture}.
@@ -73,6 +74,33 @@ A good feature vector representation is
 crucial in order to obtain an acceptable regression.
 \end{itemize}
 
+The biggest change with regards to the discrete world previously implemented is
+the action selection function. Rather than simply maximizing the value over a
+small, finite set of actions, it now has to be maximized over an infinite
+2-dimensional interval. Luckily, the value function is conveniently convex
+(\ref{fig:V}) and can be optimized by means of gradient ascent or similar
+methods.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\textwidth]{V.png}
+  \caption{A visual heatmap representation of the value function}
+  \label{fig:V}
+\end{figure}
+
+
+We opted for a more brute-force method that makes use of the fact that
+the $x$ and $y$ directions can be optimized seperately: Given a state $s$, first
+the optimal action in the $x$ direction is calculated as
+\[
+  x' = \argmax_x V(transition(s, [x, 0]))
+\]
+followed by the optimal action in the $y$ direction:
+\[
+  y' = \argmax_y V(transition(s, [x', y]))
+\]
+
+\paragraph{State transition function}
 One notable difference from Ng's version is that in our implementation
 the probabilistic model of state transition is not stated explicitly
 as a definition of a probability of transitioning to a new state 
