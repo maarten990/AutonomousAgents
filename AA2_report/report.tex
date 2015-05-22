@@ -5,6 +5,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{parskip}
 \usepackage{graphicx}
+\usepackage{placeins}
 
 \DeclareMathOperator*{\argmax}{argmax}
 
@@ -99,11 +100,42 @@ followed by the optimal action in the $y$ direction:
   y' = \argmax_y V(transition(s, [x', y]))
 \]
 
-\section*{Comparison of Algorithms}
-%new implementations vs old results
-\includegraphics[scale=0.7]{convergence.png}
-\includegraphics[scale=0.7]{n_samples.png}
+\section*{Comparison of State Sampling Methods}
+\FloatBarrier
+We tested the influence of the state sampling method on the convergence rate of
+the algorithm, where convergence is defined as the point where the current value
+function in combination with our action selection results in an optimal policy.
+The results can be found in figure \ref{fig:conv}. The x-axis shows number of
+FVI iterations performed, while the y-axis shows the duration of the simulation
+(i.e. the number of steps until the prey is caught) averaged over 100 runs. The
+tested sampling methods were 11x11 grid sampling (sampling all the states of the
+previous discrete world), 100 random samples, 10 random samples, and 1 random
+samples. Random samples where resampled on each iteration of the algorithm.
 
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{convergence.png}
+  \caption{Average simulation duration at each FVI iteration}
+  \label{fig:conv}
+\end{figure}
+
+Although using only 1 sample takes a very long time to converge, the algorithm
+can be seen to converge quite quickly for all other sampling methods, with 100
+samples being slightly quicker than using only 10. This is further analyzed in
+figure \ref{fig:n}, which plots the time to convergence as a function of the
+number of random samples. These results were not averaged over multiple runs due
+to time constraints. It shows that going from 1 to 2 samples gives a dramatic
+increase in convergence speed, with a slow steady downwards curve afterwards.
+The spike at 4 samples is likely a result of random factors.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{n_samples.png}
+  \caption{Time to convergence for various sampling densities}
+  \label{fig:n}
+\end{figure}
+
+\FloatBarrier
 \section*{Conclusion}
 % ._.
 
