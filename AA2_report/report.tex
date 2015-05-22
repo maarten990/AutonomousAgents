@@ -55,6 +55,24 @@ This whole procedure is performed iteratively for a pre-determined
 number of iterations.
 
 \section*{Implementation} 
+The algorithm has been implemented in one function
+that resembles to a certain extent the pseudo-code
+from Ng's lecture notes FIXME:ref.
+
+Behavior has been parametrized by adding a number of lambda functions
+as parameters to the function \texttt{fvi}:
+
+\begin{itemize}
+\item \texttt{sample\_states} is a function that returns the $s^{(1)}\ldots s^{(m)}$ sampled states
+\item \texttt{sample\_actions} is a function that returns a set of sampled actions, which might be in principle sampled from a continuous distribution as well.
+These action will then be used in order to calculate all $Q$-value
+estimations for a certain state $s^{(i)}$.
+\item \texttt{phi} is a function that will return a feature vector
+$\phi(s^{(i)})$ for the state $s^{(i)}$ given as input.
+A good feature vector representation is
+crucial in order to obtain an acceptable regression.
+\end{itemize}
+
 The biggest change with regards to the discrete world previously implemented is
 the action selection function. Rather than simply maximizing the value over a
 small, finite set of actions, it now has to be maximized over an infinite
@@ -80,7 +98,6 @@ followed by the optimal action in the $y$ direction:
 \[
   y' = \argmax_y V(transition(s, [x', y]))
 \]
-
 
 \section*{Comparison of Algorithms}
 %new implementations vs old results
